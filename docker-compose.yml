@@ -1,0 +1,43 @@
+  version: '3'
+
+  services:
+    app:
+      build:
+        context: .
+        dockerfile: Dockerfile
+      ports:
+        - "8080:8080" 
+      container_name: reading_tracker-app
+      environment:
+        - DATABASE_URL=mongodb://mongo:27017/reading_tracker 
+      depends_on:
+        - mongo
+      networks:
+        - app-network
+
+    mongo:
+      image: mongo:latest
+      ports:
+        - "27018:27017"
+      container_name: reading_tracker-mongo
+      volumes:
+        - ./mongo-init/app:/docker-entrypoint-initdb.d
+      networks:
+        - app-network
+
+    mongo-test:
+      image: mongo:latest
+      ports:
+        - "27019:27017"
+      container_name: reading_tracker-mongo_test
+      volumes:
+        - ./mongo-init/test:/docker-entrypoint-initdb.d
+      networks:
+        - app-network
+
+  volumes:
+    mongo_data:
+
+  networks:
+    app-network:
+      driver: bridge
