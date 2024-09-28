@@ -27,12 +27,15 @@ func main() {
 
 	// Service
 	userService := services.NewUserService(*commonUserRepository, userRepository)
+	authService := services.NewAuthService(userRepository, *commonUserRepository)
 
 	// Controller
 	userControler := controllers.NewUserController(userService)
+	authController := controllers.NewAuthController(authService)
 
 	// Routes
 	routes.UserRoutes(r, *userControler)
+	routes.AuthRoutes(r, *authController)
 
 	r.Run()
 }

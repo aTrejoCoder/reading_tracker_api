@@ -10,6 +10,7 @@ type UserDTO struct {
 	Email    string             `bson:"email"`
 	Password string             `bson:"password"`
 	Profile  ProfileDTO         `bson:"profile"`
+	Roles    []string           `bson:"roles"`
 }
 
 type UserInsertDTO struct {
@@ -23,4 +24,12 @@ type ProfileDTO struct {
 	Biography       string `bson:"biography"`
 	ProfileImageURL string `bson:"profile_image_url"`
 	ProfileCoverURL string `bson:"profile_cover_url"`
+}
+
+type ProfileInsertDTO struct {
+	FirstName       string `json:"first_name"  validate:"required,min=3"`
+	LastName        string `json:"last_name" validate:"required,min=3"`
+	Biography       string `json:"biography"`
+	ProfileImageURL string `json:"profile_image_url"`
+	ProfileCoverURL string `json:"profile_cover_url"`
 }
