@@ -45,6 +45,16 @@ func (r ApiResponse) ServerError(ctx *gin.Context, msg string) {
 	})
 }
 
+func (r ApiResponse) OK(ctx *gin.Context, data any, msg string) {
+	ctx.JSON(http.StatusOK, ApiResponse{
+		Success:   true,
+		Code:      http.StatusOK,
+		Data:      data,
+		Msg:       msg,
+		Timestamp: time.Now(),
+	})
+}
+
 func (r ApiResponse) Found(ctx *gin.Context, data any, entity string) {
 	ctx.JSON(http.StatusOK, ApiResponse{
 		Success:   true,
