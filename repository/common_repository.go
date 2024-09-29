@@ -38,9 +38,26 @@ func (r *Repository[T]) Update(ctx context.Context, id primitive.ObjectID, updat
 	updateDoc := bson.M{
 		"$set": update,
 	}
-	return r.collection.UpdateOne(ctx, bson.M{"_id": id}, updateDoc)
+	mongoResult, err := r.collection.UpdateOne(ctx, bson.M{"_id": id}, updateDoc)
+	if err != nil {
+		return mongoResult, err
+	}
+
+	if mongoResult.MatchedCount == 0 {
+		return mongoResult, utils.ErrNotFound
+	}
+	return mongoResult, nil
 }
 
 func (r *Repository[T]) Delete(ctx context.Context, id primitive.ObjectID) (*mongo.DeleteResult, error) {
-	return r.collection.DeleteOne(ctx, bson.M{"_id": id})
+	mongoResult, err := r.collection.DeleteOne(ctx, bson.M{"_id": id})
+
+	if err != nil {
+		return mongoResult, err
+	}
+
+	if mongoResult.DeletedCount == 0 {
+		return mongoResult, utils.ErrNotFound
+	}
+	return mongoResult, nil
 }

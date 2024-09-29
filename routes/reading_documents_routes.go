@@ -13,3 +13,12 @@ func BookRoutes(r *gin.Engine, bookController controllers.BookController) {
 	bookURLPath.PUT("/:id", bookController.UpdateBook())
 	bookURLPath.DELETE("/:id", bookController.DeleteBook())
 }
+
+func MangaRoutes(r *gin.Engine, bookController controllers.MangaController) {
+	bookURLPath := r.Group(commonPath + "/reading-docs/mangas")
+
+	bookURLPath.GET("/:id", bookController.GetMangaById())
+	bookURLPath.POST("/", bookController.CreateManga())
+	bookURLPath.PUT("/:id", bookController.UpdateManga())
+	bookURLPath.DELETE("/:id", bookController.DeleteManga())
+}
