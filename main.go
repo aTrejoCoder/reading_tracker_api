@@ -20,22 +20,43 @@ func main() {
 	//Database
 	database.DbConn()
 	userCollection := database.Client.Database("reading_tracker").Collection("users")
+	bookCollection := database.Client.Database("reading_tracker").Collection("bokks")
+	mangaCollection := database.Client.Database("reading_tracker").Collection("mangas")
+	documentCollection := database.Client.Database("reading_tracker").Collection("documents")
+	articleCollection := database.Client.Database("reading_tracker").Collection("article")
 
 	// Repository
 	commonUserRepository := repository.NewRepository[models.User](userCollection)
+	commonBookRepository := repository.NewRepository[models.Book](bookCollection)
+	commonMangaRepository := repository.NewRepository[models.Manga](mangaCollection)
+	commonDocumentRepository := repository.NewRepository[models.Document](documentCollection)
+	commonArticleRepository := repository.NewRepository[models.Article](articleCollection)
+
 	userRepository := repository.NewUserRepository(userCollection)
 
 	// Service
 	userService := services.NewUserService(*commonUserRepository, userRepository)
 	authService := services.NewAuthService(userRepository, *commonUserRepository)
+	bookService := services.NewBookService(*commonBookRepository)
+	mangaService := services.NewMangaService(*commonMangaRepository)
+	documentService := services.NewDocumentService(*commonDocumentRepository)
+	articleService := services.NewArticleService(*commonArticleRepository)
 
 	// Controller
 	userControler := controllers.NewUserController(userService)
 	authController := controllers.NewAuthController(authService)
+	bookController := controllers.NewBookController(bookService)
+	mangaController := controllers.NewMangaController(mangaService)
+	documentController := controllers.NewDocumentController(documentService)
+	articleController := controllers.NewArticleController(articleService)
 
 	// Routes
 	routes.UserRoutes(r, *userControler)
 	routes.AuthRoutes(r, *authController)
+	routes.BookRoutes(r, *bookController)
+	routes.MangaRoutes(r, *mangaController)
+	routes.DocumentRoutes(r, *documentController)
+	routes.ArticleRoutes(r, *articleController)
 
 	r.Run()
 }
