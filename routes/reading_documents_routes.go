@@ -15,19 +15,28 @@ func BookRoutes(r *gin.Engine, bookController controllers.BookController) {
 }
 
 func MangaRoutes(r *gin.Engine, bookController controllers.MangaController) {
-	bookURLPath := r.Group(commonPath + "/reading-docs/mangas")
+	mangaURLPath := r.Group(commonPath + "/reading-docs/mangas")
 
-	bookURLPath.GET("/:id", bookController.GetMangaById())
-	bookURLPath.POST("/", bookController.CreateManga())
-	bookURLPath.PUT("/:id", bookController.UpdateManga())
-	bookURLPath.DELETE("/:id", bookController.DeleteManga())
+	mangaURLPath.GET("/:id", bookController.GetMangaById())
+	mangaURLPath.POST("/", bookController.CreateManga())
+	mangaURLPath.PUT("/:id", bookController.UpdateManga())
+	mangaURLPath.DELETE("/:id", bookController.DeleteManga())
 }
 
 func DocumentRoutes(r *gin.Engine, documentController controllers.DocumentController) {
-	bookURLPath := r.Group(commonPath + "/reading-docs/documents")
+	documentURLPath := r.Group(commonPath + "/reading-docs/documents")
 
-	bookURLPath.GET("/:id", documentController.GetDocumentById())
-	bookURLPath.POST("/", documentController.CreateDocument())
-	bookURLPath.PUT("/:id", documentController.UpdateDocument())
-	bookURLPath.DELETE("/:id", documentController.DeleteDocument())
+	documentURLPath.GET("/:id", documentController.GetDocumentById())
+	documentURLPath.POST("/", documentController.CreateDocument())
+	documentURLPath.PUT("/:id", documentController.UpdateDocument())
+	documentURLPath.DELETE("/:id", documentController.DeleteDocument())
+}
+
+func ArticleRoutes(r *gin.Engine, articleController controllers.ArticleController) {
+	articleURLPath := r.Group(commonPath + "/reading-docs/articles")
+
+	articleURLPath.GET("/:id", articleController.GetArticleById())
+	articleURLPath.POST("/", articleController.CreateArticle())
+	articleURLPath.PUT("/:id", articleController.UpdateArticle())
+	articleURLPath.DELETE("/:id", articleController.DeleteArticle())
 }
