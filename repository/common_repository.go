@@ -49,7 +49,7 @@ func (r *Repository[T]) Update(ctx context.Context, id primitive.ObjectID, updat
 	return mongoResult, nil
 }
 
-func (r *Repository[T]) Delete(ctx context.Context, id primitive.ObjectID) (*mongo.DeleteResult, error) {
+func (r *Repository[T]) DeleteById(ctx context.Context, id primitive.ObjectID) (*mongo.DeleteResult, error) {
 	mongoResult, err := r.collection.DeleteOne(ctx, bson.M{"_id": id})
 
 	if err != nil {

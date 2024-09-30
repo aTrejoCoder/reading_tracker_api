@@ -60,7 +60,7 @@ func (bs MangaServiceImpl) UpdateManga(MangaId primitive.ObjectID, MangaInsertDT
 }
 
 func (bs MangaServiceImpl) DeleteManga(MangaId primitive.ObjectID) error {
-	if _, err := bs.commonRepository.Delete(context.TODO(), MangaId); err != nil {
+	if _, err := bs.commonRepository.DeleteById(context.TODO(), MangaId); err != nil {
 		return err
 	}
 	return nil

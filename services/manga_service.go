@@ -60,7 +60,7 @@ func (bs bookServiceImpl) UpdateBook(bookId primitive.ObjectID, bookInsertDTO dt
 }
 
 func (bs bookServiceImpl) DeleteBook(bookId primitive.ObjectID) error {
-	if _, err := bs.commonRepository.Delete(context.TODO(), bookId); err != nil {
+	if _, err := bs.commonRepository.DeleteById(context.TODO(), bookId); err != nil {
 		return err
 	}
 	return nil

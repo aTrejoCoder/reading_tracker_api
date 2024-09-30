@@ -80,7 +80,7 @@ func (us userServiceImpl) DeleteUser(userId primitive.ObjectID) (*dtos.UserDTO, 
 		return nil, err
 	}
 
-	us.commonRepository.Delete(context.TODO(), userId)
+	us.commonRepository.DeleteById(context.TODO(), userId)
 
 	userDTO := us.userMapper.EntityToDTO(*user)
 	return &userDTO, nil
