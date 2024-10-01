@@ -25,7 +25,7 @@ func NewDocumentController(DocumentService services.DocumentService) *DocumentCo
 
 func (c DocumentController) GetDocumentById() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
-		DocumentId, err := utils.GetObjectIdFromRequest(ctx)
+		DocumentId, err := utils.GetObjectIdFromUrlParam(ctx)
 		if err != nil {
 			c.apiResponse.Error(ctx, err.Error(), 400)
 			return
@@ -66,7 +66,7 @@ func (c DocumentController) CreateDocument() gin.HandlerFunc {
 
 func (c DocumentController) UpdateDocument() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
-		documentId, err := utils.GetObjectIdFromRequest(ctx)
+		documentId, err := utils.GetObjectIdFromUrlParam(ctx)
 		if err != nil {
 			c.apiResponse.Error(ctx, err.Error(), 400)
 			return
@@ -95,7 +95,7 @@ func (c DocumentController) UpdateDocument() gin.HandlerFunc {
 
 func (c DocumentController) DeleteDocument() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
-		DocumentId, err := utils.GetObjectIdFromRequest(ctx)
+		DocumentId, err := utils.GetObjectIdFromUrlParam(ctx)
 		if err != nil {
 			c.apiResponse.Error(ctx, err.Error(), 400)
 			return

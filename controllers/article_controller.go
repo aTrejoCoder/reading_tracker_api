@@ -25,7 +25,7 @@ func NewArticleController(articleService services.ArticleService) *ArticleContro
 
 func (c ArticleController) GetArticleById() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
-		ArticleId, err := utils.GetObjectIdFromRequest(ctx)
+		ArticleId, err := utils.GetObjectIdFromUrlParam(ctx)
 		if err != nil {
 			c.apiResponse.Error(ctx, err.Error(), 400)
 			return
@@ -66,7 +66,7 @@ func (c ArticleController) CreateArticle() gin.HandlerFunc {
 
 func (c ArticleController) UpdateArticle() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
-		ArticleId, err := utils.GetObjectIdFromRequest(ctx)
+		ArticleId, err := utils.GetObjectIdFromUrlParam(ctx)
 		if err != nil {
 			c.apiResponse.Error(ctx, err.Error(), 400)
 			return
@@ -95,7 +95,7 @@ func (c ArticleController) UpdateArticle() gin.HandlerFunc {
 
 func (c ArticleController) DeleteArticle() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
-		ArticleId, err := utils.GetObjectIdFromRequest(ctx)
+		ArticleId, err := utils.GetObjectIdFromUrlParam(ctx)
 		if err != nil {
 			c.apiResponse.Error(ctx, err.Error(), 400)
 			return
