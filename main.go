@@ -34,6 +34,7 @@ func main() {
 	commonArticleRepository := repository.NewRepository[models.Article](articleCollection)
 	commonReadingRepository := repository.NewRepository[models.Reading](readingCollection)
 
+	readingExtendService := repository.NewReadingExtendRepository(*readingCollection)
 	userRepository := repository.NewUserRepository(userCollection)
 
 	// Service
@@ -43,16 +44,22 @@ func main() {
 	mangaService := services.NewMangaService(*commonMangaRepository)
 	documentService := services.NewDocumentService(*commonDocumentRepository)
 	articleService := services.NewArticleService(*commonArticleRepository)
-	readingService := services.NewReadingService(*commonReadingRepository)
+
+	readingService := services.NewReadingService(*commonReadingRepository, *readingExtendService)
+	readingRecordService := services.NewReadingRecordService(*commonReadingRepository, *readingExtendService)
 
 	// Controller
 	userControler := controllers.NewUserController(userService)
+
 	authController := controllers.NewAuthController(authService)
 	bookController := controllers.NewBookController(bookService)
 	mangaController := controllers.NewMangaController(mangaService)
 	documentController := controllers.NewDocumentController(documentService)
 	articleController := controllers.NewArticleController(articleService)
+
 	readingController := controllers.NewReadingControler(readingService)
+	readingRecordController := controllers.NewReadingRecordController(readingRecordService)
+	userReadingController := controllers.NewReadingUserController(readingService)
 
 	// Routes
 	routes.UserRoutes(r, *userControler)
@@ -61,7 +68,10 @@ func main() {
 	routes.MangaRoutes(r, *mangaController)
 	routes.DocumentRoutes(r, *documentController)
 	routes.ArticleRoutes(r, *articleController)
+
 	routes.ReadingRoutes(r, *readingController)
+	routes.RecordRoutes(r, *readingRecordController)
+	routes.ReadingUserRoutes(r, *userReadingController)
 
 	r.Run()
 }

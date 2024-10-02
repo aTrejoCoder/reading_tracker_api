@@ -5,11 +5,19 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func ReadingRoutes(r *gin.Engine, bookController controllers.ReadingController) {
-	mangaURLPath := r.Group(commonPath + "/readings")
+func ReadingRoutes(r *gin.Engine, reading controllers.ReadingController) {
+	readingPath := r.Group(commonPath + "/readings")
 
-	mangaURLPath.GET("/:id", bookController.GetReadingById())
-	mangaURLPath.POST("/", bookController.CreateReading())
-	mangaURLPath.PUT("/:id", bookController.UpdateReading())
-	mangaURLPath.DELETE("/:id", bookController.DeleteReading())
+	readingPath.GET("/:id", reading.GetReadingById())
+	readingPath.POST("/", reading.CreateReading())
+	readingPath.PUT("/:id", reading.UpdateReading())
+	readingPath.DELETE("/:id", reading.DeleteReading())
+}
+
+func RecordRoutes(r *gin.Engine, record controllers.ReadingRecordController) {
+	readingRecordPath := r.Group(commonPath + "/readings/records")
+
+	readingRecordPath.POST("/", record.CreateRecord())
+	readingRecordPath.PUT("/:id", record.UpdateRecord())
+	readingRecordPath.DELETE("/:id", record.DeleteRecord())
 }

@@ -19,6 +19,7 @@ type Reading struct {
 
 type ReadingRecord struct {
 	Id         primitive.ObjectID `bson:"_id,omitempty"`
+	Progress   string             `bson:"progress"`
 	Notes      string             `bson:"notes"`
 	RecordDate time.Time          `bson:"update_date"`
 }

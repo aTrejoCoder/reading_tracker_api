@@ -1,7 +1,5 @@
 package controllers
 
-/*
-
 import (
 	"errors"
 	"net/http"
@@ -13,37 +11,37 @@ import (
 	"github.com/go-playground/validator/v10"
 )
 
-type ReadingController struct {
+type ReadingUserController struct {
 	apiResponse    utils.ApiResponse
 	validator      validator.Validate
 	readingService services.ReadingService
 }
 
-func NewReadingControler(readingService services.ReadingService) *ReadingController {
-	return &ReadingController{
+func NewReadingUserController(readingService services.ReadingService) *ReadingUserController {
+	return &ReadingUserController{
 		readingService: readingService,
 		validator:      *validator.New(),
 	}
 }
 
-func (c ReadingController) GetReadingById() gin.HandlerFunc {
+func (c ReadingUserController) GetMyReadings() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		userId, isUserIdRetrieved := utils.GetUserIdFromRequest(ctx, c.apiResponse)
 		if !isUserIdRetrieved {
 			return
 		}
 
-		readingDTOs, err := c.readingService.GetReadingById(userId)
+		readingDTOs, err := c.readingService.GetReadingsByUserId(userId)
 		if err != nil {
 			c.apiResponse.Error(ctx, err.Error(), http.StatusInternalServerError)
 			return
 		}
 
-		c.apiResponse.OK(ctx, readingDTOs, "Readings")
+		c.apiResponse.Found(ctx, readingDTOs, "Readings")
 	}
 }
 
-func (c ReadingController) CreateReading() gin.HandlerFunc {
+func (c ReadingUserController) StartReading() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		userId, isUserIdRetrieved := utils.GetUserIdFromRequest(ctx, c.apiResponse)
 		if !isUserIdRetrieved {
@@ -55,7 +53,7 @@ func (c ReadingController) CreateReading() gin.HandlerFunc {
 			return
 		}
 
-		if err := c.readingService.CreateReading(userId, readingInsertDTO); err != nil {
+		if err := c.readingService.CreateReading(readingInsertDTO, userId); err != nil {
 			c.apiResponse.ServerError(ctx, "Reading")
 			return
 		}
@@ -64,7 +62,7 @@ func (c ReadingController) CreateReading() gin.HandlerFunc {
 	}
 }
 
-func (c ReadingController) UpdateReading() gin.HandlerFunc {
+func (c ReadingUserController) UpdateMyReading() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		userId, isUserIdRetrieved := utils.GetUserIdFromRequest(ctx, c.apiResponse)
 		if !isUserIdRetrieved {
@@ -96,20 +94,29 @@ func (c ReadingController) UpdateReading() gin.HandlerFunc {
 	}
 }
 
-func (c ReadingController) DeleteReading() gin.HandlerFunc {
+func (c ReadingUserController) DeleteMyReading() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		userId, isUserIdRetrieved := utils.GetUserIdFromRequest(ctx, c.apiResponse)
 		if !isUserIdRetrieved {
 			return
 		}
 
-		err := c.readingService.DeleteReading(userId)
+		readingId, isUserIdRetrieved := utils.GetUserIdFromRequest(ctx, c.apiResponse)
+		if !isUserIdRetrieved {
+			return
+		}
+
+		err := c.readingService.DeleteReading(readingId, userId)
 		if err != nil {
-			c.apiResponse.Error(ctx, err.Error(), http.StatusInternalServerError)
+			if !errors.Is(err, utils.ErrNotFound) {
+				c.apiResponse.ServerError(ctx, err.Error())
+				return
+			}
+
+			c.apiResponse.NotFound(ctx, "Reading")
 			return
 		}
 
 		c.apiResponse.Deleted(ctx, "Reading")
 	}
 }
-*/

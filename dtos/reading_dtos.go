@@ -9,15 +9,16 @@ import (
 
 type ReadingDTO struct {
 	Id            primitive.ObjectID `json:"id"`
+	UserId        string             `json:"client_id"`
 	ReadingType   string             `json:"reading_type"`
 	ReadingStatus string             `json:"reading_status"`
 	Notes         string             `json:"notes"`
 	UpdatedAt     time.Time          `json:"last_update"`
+	RecordsDTOs   []ReadingRecordDTO `json:"records"`
 }
 
 type ReadingInsertDTO struct {
 	ReadingType   string    `json:"reading_type" validate:"required,oneof=manga book document article"`
-	UserId        string    `json:"client_id" validate:"required"`
 	ReadingStatus string    `json:"reading_status" validate:"required,oneof=ongoing completed paused"`
 	Notes         string    `json:"notes"`
 	CreatedAt     time.Time `json:"created_at" validate:"required"`
@@ -29,4 +30,17 @@ type ClientReadingInsertDTO struct {
 	ReadingsRecords []models.ReadingRecord `json:"reading_records"`
 	ReadingStatus   string                 `json:"reading_status"`
 	Notes           string                 `json:"notes"`
+}
+
+type ReadingRecordInsertDTO struct {
+	ReadingId primitive.ObjectID `json:"reading_id" validate:"required"`
+	Progress  string             `json:"progress" validate:"required"`
+	Notes     string             `json:"notes" validate:"required"`
+}
+
+type ReadingRecordDTO struct {
+	Id         primitive.ObjectID `json:"id"`
+	Progress   string             `json:"progress"`
+	Notes      string             `json:"notes"`
+	RecordDate time.Time          `bson:"update_date"`
 }

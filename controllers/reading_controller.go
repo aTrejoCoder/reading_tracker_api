@@ -9,6 +9,7 @@ import (
 	"github.com/aTrejoCoder/reading_tracker_api/utils"
 	"github.com/gin-gonic/gin"
 	"github.com/go-playground/validator/v10"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
 type ReadingController struct {
@@ -44,13 +45,24 @@ func (c ReadingController) GetReadingById() gin.HandlerFunc {
 
 func (c ReadingController) CreateReading() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
+		userIdStr := ctx.Query("userId")
+		if userIdStr == "" {
+			c.apiResponse.Error(ctx, "readingId is empty", http.StatusBadRequest)
+			return
+		}
+
+		userId, err := primitive.ObjectIDFromHex(userIdStr)
+		if err != nil {
+			c.apiResponse.Error(ctx, "userId must be an objectId", http.StatusBadRequest)
+			return
+		}
 
 		var readingInsertDTO dtos.ReadingInsertDTO
 		if isStructValid := utils.BindAndValidate(ctx, &readingInsertDTO, &c.validator, c.apiResponse); !isStructValid {
 			return
 		}
 
-		if err := c.readingService.CreateReading(readingInsertDTO); err != nil {
+		if err := c.readingService.CreateReading(readingInsertDTO, userId); err != nil {
 			c.apiResponse.ServerError(ctx, "Reading")
 			return
 		}
@@ -67,12 +79,24 @@ func (c ReadingController) UpdateReading() gin.HandlerFunc {
 			return
 		}
 
+		userIdStr := ctx.Query("userId")
+		if userIdStr == "" {
+			c.apiResponse.Error(ctx, "readingId is empty", http.StatusBadRequest)
+			return
+		}
+
+		userId, err := primitive.ObjectIDFromHex(userIdStr)
+		if err != nil {
+			c.apiResponse.Error(ctx, "userId must be an objectId", http.StatusBadRequest)
+			return
+		}
+
 		var readingInsertDTO dtos.ReadingInsertDTO
 		if isStructValid := utils.BindAndValidate(ctx, &readingInsertDTO, &c.validator, c.apiResponse); !isStructValid {
 			return
 		}
 
-		if err := c.readingService.UpdateReading(readingId, readingInsertDTO); err != nil {
+		if err := c.readingService.UpdateReading(readingId, userId, readingInsertDTO); err != nil {
 			if !errors.Is(err, utils.ErrNotFound) {
 				c.apiResponse.ServerError(ctx, err.Error())
 				return
@@ -88,13 +112,25 @@ func (c ReadingController) UpdateReading() gin.HandlerFunc {
 
 func (c ReadingController) DeleteReading() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
-		userId, err := utils.GetObjectIdFromUrlParam(ctx)
+		readingId, err := utils.GetObjectIdFromUrlParam(ctx)
 		if err != nil {
 			c.apiResponse.Error(ctx, err.Error(), 400)
 			return
 		}
 
-		err = c.readingService.DeleteReading(userId)
+		userIdStr := ctx.Query("userId")
+		if userIdStr == "" {
+			c.apiResponse.Error(ctx, "readingId is empty", http.StatusBadRequest)
+			return
+		}
+
+		userId, err := primitive.ObjectIDFromHex(userIdStr)
+		if err != nil {
+			c.apiResponse.Error(ctx, "userId must be an objectId", http.StatusBadRequest)
+			return
+		}
+
+		err = c.readingService.DeleteReading(readingId, userId)
 		if err != nil {
 			c.apiResponse.Error(ctx, err.Error(), http.StatusInternalServerError)
 			return
