@@ -74,7 +74,7 @@ func extractJWT(c *gin.Context) (string, error) {
 	return parts[1], nil
 }
 
-func GetObjectIdFromRequest(ctx *gin.Context) (primitive.ObjectID, error) {
+func GetObjectIdFromUrlParam(ctx *gin.Context) (primitive.ObjectID, error) {
 	id := ctx.Param("id")
 
 	if id == "" {
