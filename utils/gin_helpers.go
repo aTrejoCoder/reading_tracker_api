@@ -40,7 +40,11 @@ func GetUserIdFromRequest(ctx *gin.Context, apiResponse ApiResponse) (primitive.
 		return primitive.ObjectID{}, false
 	}
 
-	userObjectId, _ := primitive.ObjectIDFromHex(userIdStr)
+	userObjectId, err := primitive.ObjectIDFromHex(userIdStr)
+	if err != nil {
+		apiResponse.Error(ctx, userIdStr, http.StatusInternalServerError)
+		return primitive.ObjectID{}, false
+	}
 
 	return userObjectId, true
 }
@@ -60,6 +64,21 @@ func GetObjectIdFromUrlParam(ctx *gin.Context) (primitive.ObjectID, error) {
 	return objectId, nil
 }
 
+func GetObjectIdFromUrlQuery(ctx *gin.Context, id string) (primitive.ObjectID, error) {
+	queryId := ctx.Query(id)
+
+	if queryId == "" {
+		return primitive.ObjectID{}, errors.New("query id not provided")
+	}
+
+	objectId, err := primitive.ObjectIDFromHex(queryId)
+	if err != nil {
+		return primitive.ObjectID{}, errors.New("invalid objectId")
+	}
+
+	return objectId, nil
+}
+
 func extractJWT(c *gin.Context) (string, error) {
 	authHeader := c.GetHeader("Authorization")
 	if authHeader == "" {
@@ -72,19 +91,4 @@ func extractJWT(c *gin.Context) (string, error) {
 	}
 
 	return parts[1], nil
-}
-
-func GetObjectIdFromUrlParam(ctx *gin.Context) (primitive.ObjectID, error) {
-	id := ctx.Param("id")
-
-	if id == "" {
-		return primitive.ObjectID{}, errors.New("id not provided")
-	}
-
-	objectId, err := primitive.ObjectIDFromHex(id)
-	if err != nil {
-		return primitive.ObjectID{}, errors.New("invalid objectId")
-	}
-
-	return objectId, nil
 }
