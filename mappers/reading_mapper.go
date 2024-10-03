@@ -13,6 +13,7 @@ type ReadingMapper struct {
 
 func (rm ReadingMapper) InsertDtoToEntity(readingInsertDTO dtos.ReadingInsertDTO, userId primitive.ObjectID) models.Reading {
 	return models.Reading{
+		Id:              primitive.NewObjectID(),
 		UserId:          userId,
 		ReadingType:     readingInsertDTO.ReadingType,
 		ReadingsRecords: []models.ReadingRecord{},

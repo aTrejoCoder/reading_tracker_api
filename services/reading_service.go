@@ -22,13 +22,17 @@ type ReadingService interface {
 type readingServiceImpl struct {
 	readingRepository       repository.Repository[models.Reading]
 	readingExtendRepository repository.ReadingExtendRepository
+	userRepository          repository.UserExtendRepository
 	readingMapper           mappers.ReadingMapper
 }
 
-func NewReadingService(readingRepository repository.Repository[models.Reading], readingExtendRepository repository.ReadingExtendRepository) ReadingService {
+func NewReadingService(readingRepository repository.Repository[models.Reading],
+	readingExtendRepository repository.ReadingExtendRepository,
+	userRepository repository.UserExtendRepository) ReadingService {
 	return &readingServiceImpl{
 		readingRepository:       readingRepository,
 		readingExtendRepository: readingExtendRepository,
+		userRepository:          userRepository,
 	}
 }
 
@@ -88,12 +92,12 @@ func (rs readingServiceImpl) UpdateReading(readingId primitive.ObjectID, userId 
 }
 
 func (rs readingServiceImpl) DeleteReading(readingId primitive.ObjectID, userId primitive.ObjectID) error {
-	currentReading, err := rs.readingRepository.GetByID(context.TODO(), readingId)
+	reading, err := rs.readingRepository.GetByID(context.TODO(), readingId)
 	if err != nil {
 		return err
 	}
 
-	if currentReading.UserId != userId {
+	if reading.UserId != userId {
 		return utils.ErrForbidden
 	}
 

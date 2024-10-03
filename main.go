@@ -34,6 +34,7 @@ func main() {
 	commonArticleRepository := repository.NewRepository[models.Article](articleCollection)
 	commonReadingRepository := repository.NewRepository[models.Reading](readingCollection)
 
+	readingListRepository := repository.NewReadingListRepository(*userCollection, *commonUserRepository)
 	readingExtendService := repository.NewReadingExtendRepository(*readingCollection)
 	userRepository := repository.NewUserRepository(userCollection)
 
@@ -45,7 +46,8 @@ func main() {
 	documentService := services.NewDocumentService(*commonDocumentRepository)
 	articleService := services.NewArticleService(*commonArticleRepository)
 
-	readingService := services.NewReadingService(*commonReadingRepository, *readingExtendService)
+	readingListService := services.NewReadingListService(*readingListRepository)
+	readingService := services.NewReadingService(*commonReadingRepository, *readingExtendService, userRepository)
 	readingRecordService := services.NewReadingRecordService(*commonReadingRepository, *readingExtendService)
 
 	// Controller
@@ -57,9 +59,12 @@ func main() {
 	documentController := controllers.NewDocumentController(documentService)
 	articleController := controllers.NewArticleController(articleService)
 
+	readingListController := controllers.NewReadingListController(readingListService)
 	readingController := controllers.NewReadingControler(readingService)
-	readingRecordController := controllers.NewReadingRecordController(readingRecordService)
-	userReadingController := controllers.NewReadingUserController(readingService)
+	readingRecordController := controllers.NewRecordController(readingRecordService)
+	readingUserController := controllers.NewReadingUserController(readingService)
+
+	recordUserController := controllers.NewRecordUserController(readingRecordService)
 
 	// Routes
 	routes.UserRoutes(r, *userControler)
@@ -71,7 +76,9 @@ func main() {
 
 	routes.ReadingRoutes(r, *readingController)
 	routes.RecordRoutes(r, *readingRecordController)
-	routes.ReadingUserRoutes(r, *userReadingController)
+	routes.ReadingUserRoutes(r, *readingUserController)
+	routes.RecordUserRoutes(r, *recordUserController)
+	routes.ReadinListRoutes(r, *readingListController)
 
 	r.Run()
 }

@@ -19,7 +19,7 @@ type AuthServices interface {
 	ProccesLogin(userDTO dtos.UserDTO) (string, error)
 }
 
-func NewAuthService(userRepository repository.UserRepository, commonRepository repository.Repository[models.User]) AuthServices {
+func NewAuthService(userRepository repository.UserExtendRepository, commonRepository repository.Repository[models.User]) AuthServices {
 	return &authServiceImpl{
 		userRepository:   userRepository,
 		commonRepository: commonRepository,
@@ -27,7 +27,7 @@ func NewAuthService(userRepository repository.UserRepository, commonRepository r
 }
 
 type authServiceImpl struct {
-	userRepository   repository.UserRepository
+	userRepository   repository.UserExtendRepository
 	authMapper       mappers.AuthMapper
 	userMapper       mappers.UserMapper
 	commonRepository repository.Repository[models.User]

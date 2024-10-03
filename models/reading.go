@@ -25,8 +25,10 @@ type ReadingRecord struct {
 }
 
 type ReadingsList struct {
-	BookReadings     []Reading `bson:"book_readings"`
-	MangaReadings    []Reading `bson:"manga_readings"`
-	DocumentReadings []Reading `bson:"document_readings"`
-	ArticleReadings  []Reading `bson:"article_readings"`
+	Id          primitive.ObjectID   `bson:"_id,omitempty"`
+	ReadingIds  []primitive.ObjectID `bson:"reading_ids"`
+	Name        string               `bson:"name"`
+	Description string               `bson:"description"`
+	CreatedAt   time.Time            `bson:"created_at"`
+	UpdatedAt   time.Time            `bson:"updated_at"`
 }

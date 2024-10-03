@@ -64,6 +64,21 @@ func GetObjectIdFromUrlParam(ctx *gin.Context) (primitive.ObjectID, error) {
 	return objectId, nil
 }
 
+func GetObjectIdFromUrlQuery(ctx *gin.Context, id string) (primitive.ObjectID, error) {
+	queryId := ctx.Query(id)
+
+	if queryId == "" {
+		return primitive.ObjectID{}, errors.New("query id not provided")
+	}
+
+	objectId, err := primitive.ObjectIDFromHex(queryId)
+	if err != nil {
+		return primitive.ObjectID{}, errors.New("invalid objectId")
+	}
+
+	return objectId, nil
+}
+
 func extractJWT(c *gin.Context) (string, error) {
 	authHeader := c.GetHeader("Authorization")
 	if authHeader == "" {

@@ -2,8 +2,9 @@ package repository
 
 import (
 	"context"
-	"errors"
+	"log"
 
+	"github.com/aTrejoCoder/reading_tracker_api/dtos"
 	"github.com/aTrejoCoder/reading_tracker_api/models"
 	"github.com/aTrejoCoder/reading_tracker_api/utils"
 	"go.mongodb.org/mongo-driver/bson"
@@ -20,32 +21,35 @@ func NewReadingExtendRepository(collection mongo.Collection) *ReadingExtendRepos
 	return &ReadingExtendRepository{collection: collection}
 }
 
-func (r *ReadingExtendRepository) UpdateRecord(ctx context.Context, id primitive.ObjectID, update interface{}) (*mongo.UpdateResult, error) {
-	mongoResult, err := r.collection.UpdateOne(ctx, bson.M{"_id": id}, update)
+func (r *ReadingExtendRepository) UpdateRecord(ctx context.Context, id primitive.ObjectID, userId primitive.ObjectID, update interface{}) (*mongo.UpdateResult, error) {
+	log.Println("Starting UpdateRecord function")
+	log.Printf("Updating record with ID: %s and UserID: %s\n", id.Hex(), userId.Hex())
+
+	filter := bson.M{
+		"_id":     id,
+		"user_id": userId,
+	}
+	log.Printf("Filter: %+v\n", filter)
+	log.Printf("Update data: %+v\n", update)
+
+	mongoResult, err := r.collection.UpdateOne(ctx, filter, update)
 	if err != nil {
+		log.Printf("Error in UpdateOne: %v\n", err)
 		return mongoResult, err
 	}
 
 	if mongoResult.MatchedCount == 0 {
+		log.Println("No documents matched the filter")
 		return mongoResult, utils.ErrNotFound
 	}
+
+	log.Printf("Update result: %+v\n", mongoResult)
 	return mongoResult, nil
 }
 
 func (r *ReadingExtendRepository) UpdateWithFilter(ctx context.Context, id primitive.ObjectID, update interface{}, arrayFilter interface{}) (*mongo.UpdateResult, error) {
-	var filters []interface{}
-
-	switch af := arrayFilter.(type) {
-	case primitive.A:
-		filters = af
-	case []interface{}:
-		filters = af
-	default:
-		return nil, errors.New("arrayFilter debe ser de tipo []interface{} o primitive.A")
-	}
-
 	updateOptions := options.Update().SetArrayFilters(options.ArrayFilters{
-		Filters: filters,
+		Filters: arrayFilter.(primitive.A),
 	})
 
 	mongoResult, err := r.collection.UpdateOne(ctx, bson.M{"_id": id}, update, updateOptions)
@@ -57,6 +61,38 @@ func (r *ReadingExtendRepository) UpdateWithFilter(ctx context.Context, id primi
 	}
 	return mongoResult, nil
 }
+
+func (r *ReadingExtendRepository) UpdateRecordProperties(ctx context.Context, readingId primitive.ObjectID, recordId primitive.ObjectID, recordUpdateDTO dtos.ReadingRecordInsertDTO) (*mongo.UpdateResult, error) {
+	filter := bson.M{
+		"_id": readingId,
+	}
+
+	update := bson.M{
+		"$set": bson.M{
+			"reading_records.$[record].notes":    recordUpdateDTO.Notes,
+			"reading_records.$[record].progress": recordUpdateDTO.Progress,
+		},
+	}
+
+	arrayFilter := bson.A{
+		bson.M{"record._id": recordId},
+	}
+
+	updateOptions := options.Update().SetArrayFilters(options.ArrayFilters{
+		Filters: arrayFilter,
+	})
+
+	mongoResult, err := r.collection.UpdateOne(ctx, filter, update, updateOptions)
+	if err != nil {
+		if err == mongo.ErrNoDocuments {
+			return nil, utils.ErrNotFound
+		}
+		return nil, err
+	}
+
+	return mongoResult, nil
+}
+
 func (r *ReadingExtendRepository) GetReadingsByUserId(ctx context.Context, userId primitive.ObjectID) ([]models.Reading, error) {
 	filter := bson.M{"user_id": userId}
 

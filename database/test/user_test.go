@@ -44,7 +44,7 @@ func TestUserInsertionAndRetrieval(t *testing.T) {
 	assert.Equal(t, userTest.CreatedAt.Truncate(time.Millisecond), retrievedUser.CreatedAt.Truncate(time.Millisecond))
 	assert.Equal(t, userTest.UpdatedAt.Truncate(time.Millisecond), retrievedUser.UpdatedAt.Truncate(time.Millisecond))
 	assert.Equal(t, userTest.Profile.FullName, retrievedUser.Profile.FullName)
-	assert.Empty(t, retrievedUser.ReadingsList)
+	assert.Empty(t, retrievedUser.ReadingsLists)
 	assert.Equal(t, userTest.Profile.Biography, retrievedUser.Profile.Biography)
 	assert.Equal(t, userTest.Profile.ProfileImageURL, retrievedUser.Profile.ProfileImageURL)
 	assert.Equal(t, userTest.Profile.ProfileCoverURL, retrievedUser.Profile.ProfileCoverURL)
@@ -142,8 +142,8 @@ func getTestUser() models.User {
 			CreatedAt:       now,
 			UpdatedAt:       now,
 		},
-		ReadingsList: models.ReadingsList{},
-		Roles:        []string{"common_user"},
+		ReadingsLists: []models.ReadingsList{},
+		Roles:         []string{"common_user"},
 
 		LastLogin: now,
 		CreatedAt: now,

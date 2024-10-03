@@ -24,3 +24,12 @@ func ReadingUserRoutes(r *gin.Engine, userReadingController controllers.ReadingU
 	usersPath.PUT("/:id", userReadingController.UpdateMyReading())
 	usersPath.DELETE("/:id", userReadingController.DeleteMyReading())
 }
+
+func RecordUserRoutes(r *gin.Engine, userReadingController controllers.RecordUserController) {
+	// :id = readingId
+	usersPath := r.Group(commonPath + "/user-records")
+	usersPath.GET("/:id", userReadingController.GetRecordsFromMyReading())
+	usersPath.POST("/", userReadingController.AddRecord())
+	usersPath.PUT("/:id", userReadingController.UpdateRecord())
+	usersPath.DELETE("/:id", userReadingController.RemoveMyRecord())
+}
