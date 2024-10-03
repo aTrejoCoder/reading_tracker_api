@@ -29,9 +29,8 @@ func (um UserMapper) InsertDtoToEntity(userInsertDTO dtos.UserInsertDTO) models.
 		UpdatedAt: now,
 		LastLogin: now,
 
-		Roles:        []string{"common_user"},
-		Profile:      models.Profile{},
-		ReadingsList: models.ReadingsList{},
+		Roles:   []string{"common_user"},
+		Profile: models.Profile{},
 	}
 }
 

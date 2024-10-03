@@ -26,7 +26,7 @@ func NewUserController(userService services.UserService) *UserController {
 
 func (c UserController) GetUserById() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
-		userId, err := utils.GetObjectIdFromRequest(ctx)
+		userId, err := utils.GetObjectIdFromUrlParam(ctx)
 		if err != nil {
 			c.apiResponse.Error(ctx, err.Error(), http.StatusBadRequest)
 			return
@@ -73,7 +73,7 @@ func (c UserController) CreateUser() gin.HandlerFunc {
 
 func (c UserController) UpdateUser() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
-		userId, err := utils.GetObjectIdFromRequest(ctx)
+		userId, err := utils.GetObjectIdFromUrlParam(ctx)
 		if err != nil {
 			c.apiResponse.Error(ctx, err.Error(), http.StatusBadRequest)
 			return
@@ -108,7 +108,7 @@ func (c UserController) UpdateUser() gin.HandlerFunc {
 
 func (c UserController) DeleteUser() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
-		userId, err := utils.GetObjectIdFromRequest(ctx)
+		userId, err := utils.GetObjectIdFromUrlParam(ctx)
 		if err != nil {
 			c.apiResponse.Error(ctx, err.Error(), http.StatusBadRequest)
 			return

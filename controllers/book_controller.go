@@ -25,7 +25,7 @@ func NewBookController(bookService services.BookService) *BookController {
 
 func (c BookController) GetBookById() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
-		bookId, err := utils.GetObjectIdFromRequest(ctx)
+		bookId, err := utils.GetObjectIdFromUrlParam(ctx)
 		if err != nil {
 			c.apiResponse.Error(ctx, err.Error(), 400)
 			return
@@ -66,7 +66,7 @@ func (c BookController) CreateBook() gin.HandlerFunc {
 
 func (c BookController) UpdateBook() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
-		bookId, err := utils.GetObjectIdFromRequest(ctx)
+		bookId, err := utils.GetObjectIdFromUrlParam(ctx)
 		if err != nil {
 			c.apiResponse.Error(ctx, err.Error(), 400)
 			return
@@ -95,7 +95,7 @@ func (c BookController) UpdateBook() gin.HandlerFunc {
 
 func (c BookController) DeleteBook() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
-		bookId, err := utils.GetObjectIdFromRequest(ctx)
+		bookId, err := utils.GetObjectIdFromUrlParam(ctx)
 		if err != nil {
 			c.apiResponse.Error(ctx, err.Error(), 400)
 			return

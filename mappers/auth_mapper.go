@@ -34,9 +34,8 @@ func (am AuthMapper) SignupDtoEntity(signupDTO dtos.SignupDTO) models.User {
 		UpdatedAt: now,
 		LastLogin: now,
 
-		Roles:        []string{"common_user"},
-		Profile:      profile,
-		ReadingsList: models.ReadingsList{},
+		Roles:   []string{"common_user"},
+		Profile: profile,
 	}
 
 }

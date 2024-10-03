@@ -25,7 +25,7 @@ func NewMangaController(MangaService services.MangaService) *MangaController {
 
 func (c MangaController) GetMangaById() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
-		mangaId, err := utils.GetObjectIdFromRequest(ctx)
+		mangaId, err := utils.GetObjectIdFromUrlParam(ctx)
 		if err != nil {
 			c.apiResponse.Error(ctx, err.Error(), 400)
 			return
@@ -66,7 +66,7 @@ func (c MangaController) CreateManga() gin.HandlerFunc {
 
 func (c MangaController) UpdateManga() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
-		mangaId, err := utils.GetObjectIdFromRequest(ctx)
+		mangaId, err := utils.GetObjectIdFromUrlParam(ctx)
 		if err != nil {
 			c.apiResponse.Error(ctx, err.Error(), 400)
 			return
@@ -95,7 +95,7 @@ func (c MangaController) UpdateManga() gin.HandlerFunc {
 
 func (c MangaController) DeleteManga() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
-		mangaId, err := utils.GetObjectIdFromRequest(ctx)
+		mangaId, err := utils.GetObjectIdFromUrlParam(ctx)
 		if err != nil {
 			c.apiResponse.Error(ctx, err.Error(), 400)
 			return

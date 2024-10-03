@@ -7,16 +7,16 @@ import (
 )
 
 type User struct {
-	Id           primitive.ObjectID `bson:"_id,omitempty"`
-	Username     string             `bson:"username"`
-	Email        string             `bson:"email"`
-	Password     string             `bson:"password"`
-	Profile      Profile            `bson:"profile"`
-	LastLogin    time.Time          `bson:"last_login"`
-	CreatedAt    time.Time          `bson:"created_at"`
-	UpdatedAt    time.Time          `bson:"updated_at"`
-	ReadingsList ReadingsList       `bson:"readings"`
-	Roles        []string           `bson:"roles"`
+	Id            primitive.ObjectID `bson:"_id,omitempty"`
+	Username      string             `bson:"username"`
+	Email         string             `bson:"email"`
+	Password      string             `bson:"password"`
+	Profile       Profile            `bson:"profile"`
+	LastLogin     time.Time          `bson:"last_login"`
+	CreatedAt     time.Time          `bson:"created_at"`
+	UpdatedAt     time.Time          `bson:"updated_at"`
+	ReadingsLists []ReadingsList     `bson:"reading_lists"`
+	Roles         []string           `bson:"roles"`
 }
 
 type Profile struct {
