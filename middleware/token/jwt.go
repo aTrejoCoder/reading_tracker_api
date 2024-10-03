@@ -74,5 +74,5 @@ func GetIDFromJWT(tokenString string) (string, error) {
 	if err != nil {
 		return "", err
 	}
-	return claims.ID, nil
+	return claims.ObjectId, nil
 }
