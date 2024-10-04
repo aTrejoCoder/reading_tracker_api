@@ -2,6 +2,7 @@ package repository
 
 import (
 	"context"
+	"errors"
 	"time"
 
 	"github.com/aTrejoCoder/reading_tracker_api/dtos"
@@ -61,7 +62,9 @@ func (r ReadingListRepository) AddReadingsToList(ctx context.Context, userId pri
 
 	update := bson.M{
 		"$addToSet": bson.M{
-			"reading_lists.$.reading_id": bson.M{"$each": readingsId},
+			"reading_lists.$.reading_ids": bson.M{
+				"$each": readingsId,
+			},
 		},
 	}
 
@@ -70,8 +73,12 @@ func (r ReadingListRepository) AddReadingsToList(ctx context.Context, userId pri
 		return nil, err
 	}
 
-	if mongoResult.ModifiedCount == 0 {
+	if mongoResult.MatchedCount == 0 {
 		return nil, utils.ErrNotFound
+	}
+
+	if mongoResult.ModifiedCount == 0 {
+		return mongoResult, nil
 	}
 
 	return mongoResult, nil
@@ -85,7 +92,7 @@ func (r ReadingListRepository) RemoveReadingsFromList(ctx context.Context, userI
 
 	update := bson.M{
 		"$pull": bson.M{
-			"reading_lists.$.reading_id": bson.M{"$in": readingsId},
+			"reading_lists.$.reading_ids": bson.M{"$in": readingsId},
 		},
 	}
 
@@ -94,10 +101,13 @@ func (r ReadingListRepository) RemoveReadingsFromList(ctx context.Context, userI
 		return nil, err
 	}
 
-	if mongoResult.ModifiedCount == 0 {
-		return nil, utils.ErrNotFound
+	if mongoResult.MatchedCount == 0 {
+		return nil, err
 	}
 
+	if mongoResult.ModifiedCount == 0 {
+		return nil, errors.New("no changes")
+	}
 	return mongoResult, nil
 }
 

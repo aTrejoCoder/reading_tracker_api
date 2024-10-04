@@ -60,6 +60,7 @@ func main() {
 	articleController := controllers.NewArticleController(articleService)
 
 	readingListController := controllers.NewReadingListController(readingListService)
+	readingListUserController := controllers.NewReadingListUserController(readingListService)
 	readingController := controllers.NewReadingControler(readingService)
 	readingRecordController := controllers.NewRecordController(readingRecordService)
 	readingUserController := controllers.NewReadingUserController(readingService)
@@ -78,7 +79,8 @@ func main() {
 	routes.RecordRoutes(r, *readingRecordController)
 	routes.ReadingUserRoutes(r, *readingUserController)
 	routes.RecordUserRoutes(r, *recordUserController)
-	routes.ReadinListRoutes(r, *readingListController)
+	routes.ReadingListRoutes(r, *readingListController)
+	routes.ReadingListUserRoutes(r, *readingListUserController)
 
 	r.Run()
 }

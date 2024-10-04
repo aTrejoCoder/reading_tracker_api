@@ -6,6 +6,7 @@ import (
 	"github.com/aTrejoCoder/reading_tracker_api/dtos"
 	"github.com/aTrejoCoder/reading_tracker_api/mappers"
 	"github.com/aTrejoCoder/reading_tracker_api/repository"
+	"github.com/aTrejoCoder/reading_tracker_api/utils"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
@@ -14,6 +15,7 @@ type ReadingListService interface {
 	RemoveReadingToList(userId primitive.ObjectID, moveReadingsToListDTO dtos.UpdateReadingsToListDTO) error
 
 	GetReadingListsByUserId(userId primitive.ObjectID) ([]dtos.ReadingListDTO, error)
+	GetReadingListById(listId primitive.ObjectID, userId primitive.ObjectID) (*dtos.ReadingListDTO, error)
 	CreateReadingList(userId primitive.ObjectID, ReadingListInsertDTO dtos.ReadingListInsertDTO) error
 	UpdateReadingList(readingListId primitive.ObjectID, userId primitive.ObjectID, insertDTO dtos.ReadingListInsertDTO) error
 	DeleteReadingList(userId primitive.ObjectID, readingListId primitive.ObjectID) error
@@ -43,6 +45,28 @@ func (rls readingListServiceImpl) GetReadingListsByUserId(userId primitive.Objec
 	}
 
 	return readingListDTOs, nil
+}
+
+func (rls readingListServiceImpl) GetReadingListById(listId primitive.ObjectID, userId primitive.ObjectID) (*dtos.ReadingListDTO, error) {
+	readingLists, err := rls.readingListRepository.GetByUserId(context.TODO(), userId)
+	if err != nil {
+		return nil, err
+	}
+
+	var readingListDTO *dtos.ReadingListDTO
+	for _, readingList := range readingLists {
+		if readingList.Id == listId {
+			readingListDTO = &dtos.ReadingListDTO{}
+			*readingListDTO = rls.readingListMapper.EntityToDTO(readingList)
+			break
+		}
+	}
+
+	if readingListDTO == nil {
+		return nil, utils.ErrNotFound
+	}
+
+	return readingListDTO, nil
 }
 
 func (rls readingListServiceImpl) CreateReadingList(userId primitive.ObjectID, ReadingListInsertDTO dtos.ReadingListInsertDTO) error {
