@@ -28,10 +28,12 @@ func main() {
 	commonUserRepository := repository.NewRepository[models.User](userCollection)
 	commonBookRepository := repository.NewRepository[models.Book](bookCollection)
 	commonMangaRepository := repository.NewRepository[models.Manga](mangaCollection)
+	commonDocumentRepository := repository.NewCustomDocumentRepository(*userCollection, *commonUserRepository)
+
 	commonReadingRepository := repository.NewRepository[models.Reading](readingCollection)
 
 	readingListRepository := repository.NewReadingListRepository(*userCollection, *commonUserRepository)
-	readingExtendRepository := repository.NewReadingExtendRepository(*readingCollection)
+	readingExtendService := repository.NewReadingExtendRepository(*readingCollection)
 	userRepository := repository.NewUserRepository(userCollection)
 
 	// Service
@@ -41,8 +43,9 @@ func main() {
 	mangaService := services.NewMangaService(*commonMangaRepository)
 
 	readingListService := services.NewReadingListService(*readingListRepository)
-	readingService := services.NewReadingService(*commonReadingRepository, *readingExtendRepository, *commonMangaRepository, *commonBookRepository, *commonUserRepository)
-	readingRecordService := services.NewReadingRecordService(*commonReadingRepository, *readingExtendRepository)
+	readingService := services.NewReadingService(*commonReadingRepository, *readingExtendService, *commonMangaRepository, *commonBookRepository, *commonUserRepository)
+	readingRecordService := services.NewReadingRecordService(*commonReadingRepository, *readingExtendService)
+	documentService := services.NewCustomDocumentService(*commonDocumentRepository)
 
 	// Controller
 	userControler := controllers.NewUserController(userService)
@@ -57,6 +60,7 @@ func main() {
 	readingRecordController := controllers.NewRecordController(readingRecordService)
 	readingUserController := controllers.NewReadingUserController(readingService)
 
+	documentController := controllers.NewDocumentController(documentService)
 	recordUserController := controllers.NewRecordUserController(readingRecordService)
 
 	// Routes
@@ -71,6 +75,7 @@ func main() {
 	routes.RecordUserRoutes(r, *recordUserController)
 	routes.ReadingListRoutes(r, *readingListController)
 	routes.ReadingListUserRoutes(r, *readingListUserController)
+	routes.CustomDocumentUserRoutes(r, *documentController)
 
 	r.Run()
 }

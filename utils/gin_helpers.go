@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"strconv"
 	"strings"
 
 	"github.com/aTrejoCoder/reading_tracker_api/middleware/token"
@@ -91,4 +92,33 @@ func extractJWT(c *gin.Context) (string, error) {
 	}
 
 	return parts[1], nil
+}
+
+func GetPaginationValuesFromRequest(c *gin.Context) (int64, int64) {
+	pageStr := c.Query("page")
+	limitStr := c.Query("limit")
+
+	var page, limit int64
+
+	if pageStr == "" {
+		page = 1 // Default Page
+	} else {
+		var err error
+		page, err = strconv.ParseInt(pageStr, 10, 64)
+		if err != nil || page < 1 {
+			page = 1 // Default Page
+		}
+	}
+
+	if limitStr == "" {
+		limit = 10 // Default Limit
+	} else {
+		var err error
+		limit, err = strconv.ParseInt(limitStr, 10, 64)
+		if err != nil || limit < 1 {
+			limit = 10 // Default Limit
+		}
+	}
+
+	return page, limit
 }
