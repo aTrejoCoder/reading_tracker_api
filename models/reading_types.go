@@ -24,51 +24,34 @@ type Book struct {
 	UpdatedAt       time.Time            `bson:"updated_at"`
 }
 
-type Article struct {
-	Id            primitive.ObjectID   `bson:"_id,omitempty"`
-	Title         string               `bson:"title"`
-	Author        string               `bson:"author"`
-	Content       string               `bson:"content"`
-	Summary       string               `bson:"summary"`
-	PublishedDate time.Time            `bson:"published_date"`
-	Tags          []string             `bson:"tags"`
-	Category      string               `bson:"category"`
-	URL           string               `bson:"url"`
-	CreatedAt     time.Time            `bson:"created_at"`
-	UpdatedAt     time.Time            `bson:"updated_at"`
-	ReadingList   []primitive.ObjectID `bson:"reading_list"`
-	Status        string               `bson:"status"`
-	Views         int                  `bson:"views"`
-}
-
-type Document struct {
-	Id          primitive.ObjectID   `bson:"_id,omitempty"`
-	Title       string               `bson:"title"`
-	Author      string               `bson:"author"`
-	Description string               `bson:"description"`
-	FileURL     string               `bson:"file_url"`
-	FileType    string               `bson:"file_type"`
-	Tags        []string             `bson:"tags"`
-	CreatedAt   time.Time            `bson:"created_at"`
-	UpdatedAt   time.Time            `bson:"updated_at"`
-	Version     string               `bson:"version"`
-	ReadingList []primitive.ObjectID `bson:"reading_list"`
-	Status      string               `bson:"status"`
-}
-
 type Manga struct {
-	Id              primitive.ObjectID   `bson:"_id,omitempty"`
-	Title           string               `bson:"title"`
-	Author          string               `bson:"author"`
-	CoverImageURL   string               `bson:"cover_image_url"`
-	Volume          int                  `bson:"volume"`
-	Chapters        int                  `bson:"chapters"`
-	Demogragphy     string               `bson:"demograhpy"`
-	Genres          []string             `bson:"genres"`
-	PublicationDate time.Time            `bson:"publication_date"`
-	Publisher       string               `bson:"publisher"`
-	Description     string               `bson:"description"`
-	ReadingList     []primitive.ObjectID `bson:"reading_list"`
-	CreatedAt       time.Time            `bson:"created_at"`
-	UpdatedAt       time.Time            `bson:"updated_at"`
+	Id              primitive.ObjectID `bson:"_id,omitempty"`
+	Title           string             `bson:"title"`
+	Author          string             `bson:"author"`
+	CoverImageURL   string             `bson:"cover_image_url"`
+	Volume          int                `bson:"volume"`
+	Chapters        int                `bson:"chapters"`
+	Demography      string             `bson:"demograhpy"`
+	Genres          []string           `bson:"genres"`
+	PublicationDate time.Time          `bson:"publication_date"`
+	Publisher       string             `bson:"publisher"`
+	Description     string             `bson:"description"`
+	CreatedAt       time.Time          `bson:"created_at"`
+	UpdatedAt       time.Time          `bson:"updated_at"`
+}
+
+type CustomDocument struct {
+	Id          primitive.ObjectID `bson:"_id,omitempty"`
+	Title       string             `bson:"title"`
+	Author      string             `bson:"author"`
+	Description string             `bson:"description"`
+	Content     string             `bson:"content"`
+	FileURL     string             `bson:"file_url"`
+	URL         string             `bson:"url"`
+	Tags        []string           `bson:"tags"`
+	Category    string             `bson:"category"`
+	CreatedAt   time.Time          `bson:"created_at"`
+	UpdatedAt   time.Time          `bson:"updated_at"`
+	Version     string             `bson:"version"`
+	Status      string             `bson:"status"`
 }
