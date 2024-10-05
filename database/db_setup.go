@@ -11,7 +11,6 @@ import (
 var Client *mongo.Client
 
 const databaseName = "reading_tracker"
-const readingCollection = "readings"
 
 func DbConn() {
 	// Connect to docker container
@@ -37,8 +36,4 @@ func DbConn() {
 	////////////////////////////////////////////////////////////
 	`)
 
-}
-
-func GetReadingColletion() *mongo.Collection {
-	return Client.Database(databaseName).Collection(readingCollection)
 }
