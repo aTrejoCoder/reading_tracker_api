@@ -22,21 +22,3 @@ func MangaRoutes(r *gin.Engine, bookController controllers.MangaController) {
 	mangaURLPath.PUT("/:id", bookController.UpdateManga())
 	mangaURLPath.DELETE("/:id", bookController.DeleteManga())
 }
-
-func DocumentRoutes(r *gin.Engine, documentController controllers.DocumentController) {
-	documentURLPath := r.Group(commonPath + "/reading-docs/documents")
-
-	documentURLPath.GET("/:id", documentController.GetDocumentById())
-	documentURLPath.POST("/", documentController.CreateDocument())
-	documentURLPath.PUT("/:id", documentController.UpdateDocument())
-	documentURLPath.DELETE("/:id", documentController.DeleteDocument())
-}
-
-func ArticleRoutes(r *gin.Engine, articleController controllers.ArticleController) {
-	articleURLPath := r.Group(commonPath + "/reading-docs/articles")
-
-	articleURLPath.GET("/:id", articleController.GetArticleById())
-	articleURLPath.POST("/", articleController.CreateArticle())
-	articleURLPath.PUT("/:id", articleController.UpdateArticle())
-	articleURLPath.DELETE("/:id", articleController.DeleteArticle())
-}

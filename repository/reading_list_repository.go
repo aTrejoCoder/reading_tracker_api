@@ -32,7 +32,7 @@ func (r ReadingListRepository) GetByUserId(ctx context.Context, userId primitive
 		return []models.ReadingsList{}, err
 	}
 
-	return user.ReadingsLists, nil
+	return user.ReadingLists, nil
 }
 
 func (r ReadingListRepository) CreateReadingList(ctx context.Context, userId primitive.ObjectID, readingList models.ReadingsList) error {
