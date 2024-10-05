@@ -41,6 +41,40 @@ func (c ReadingUserController) GetMyReadings() gin.HandlerFunc {
 	}
 }
 
+func (c ReadingUserController) GetMyMangaReadings() gin.HandlerFunc {
+	return func(ctx *gin.Context) {
+		userId, isUserIdRetrieved := utils.GetUserIdFromRequest(ctx, c.apiResponse)
+		if !isUserIdRetrieved {
+			return
+		}
+
+		readingDTOs, err := c.readingService.GetReadingsByUserId(userId)
+		if err != nil {
+			c.apiResponse.Error(ctx, err.Error(), http.StatusInternalServerError)
+			return
+		}
+
+		c.apiResponse.Found(ctx, readingDTOs, "Readings")
+	}
+}
+
+func (c ReadingUserController) GetMyBookReadings() gin.HandlerFunc {
+	return func(ctx *gin.Context) {
+		userId, isUserIdRetrieved := utils.GetUserIdFromRequest(ctx, c.apiResponse)
+		if !isUserIdRetrieved {
+			return
+		}
+
+		readingDTOs, err := c.readingService.GetReadingsByUserId(userId)
+		if err != nil {
+			c.apiResponse.Error(ctx, err.Error(), http.StatusInternalServerError)
+			return
+		}
+
+		c.apiResponse.Found(ctx, readingDTOs, "Readings")
+	}
+}
+
 func (c ReadingUserController) StartReading() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		userId, isUserIdRetrieved := utils.GetUserIdFromRequest(ctx, c.apiResponse)
@@ -54,7 +88,7 @@ func (c ReadingUserController) StartReading() gin.HandlerFunc {
 		}
 
 		if err := c.readingService.CreateReading(readingInsertDTO, userId); err != nil {
-			c.apiResponse.ServerError(ctx, "Reading")
+			c.apiResponse.ServerError(ctx, err.Error())
 			return
 		}
 

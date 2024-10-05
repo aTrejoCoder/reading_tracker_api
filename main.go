@@ -20,7 +20,7 @@ func main() {
 	//Database
 	database.DbConn()
 	userCollection := database.Client.Database("reading_tracker").Collection("users")
-	bookCollection := database.Client.Database("reading_tracker").Collection("bokks")
+	bookCollection := database.Client.Database("reading_tracker").Collection("books")
 	mangaCollection := database.Client.Database("reading_tracker").Collection("mangas")
 	readingCollection := database.Client.Database("reading_tracker").Collection("readings")
 
@@ -31,7 +31,7 @@ func main() {
 	commonReadingRepository := repository.NewRepository[models.Reading](readingCollection)
 
 	readingListRepository := repository.NewReadingListRepository(*userCollection, *commonUserRepository)
-	readingExtendService := repository.NewReadingExtendRepository(*readingCollection)
+	readingExtendRepository := repository.NewReadingExtendRepository(*readingCollection)
 	userRepository := repository.NewUserRepository(userCollection)
 
 	// Service
@@ -41,8 +41,8 @@ func main() {
 	mangaService := services.NewMangaService(*commonMangaRepository)
 
 	readingListService := services.NewReadingListService(*readingListRepository)
-	readingService := services.NewReadingService(*commonReadingRepository, *readingExtendService, userRepository)
-	readingRecordService := services.NewReadingRecordService(*commonReadingRepository, *readingExtendService)
+	readingService := services.NewReadingService(*commonReadingRepository, *readingExtendRepository, *commonMangaRepository, *commonBookRepository, *commonUserRepository)
+	readingRecordService := services.NewReadingRecordService(*commonReadingRepository, *readingExtendRepository)
 
 	// Controller
 	userControler := controllers.NewUserController(userService)

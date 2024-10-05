@@ -10,6 +10,7 @@ import (
 type ReadingDTO struct {
 	Id            primitive.ObjectID `json:"id"`
 	UserId        string             `json:"client_id"`
+	DocumentData  interface{}        `json:"document_data"`
 	ReadingType   string             `json:"reading_type"`
 	ReadingStatus string             `json:"reading_status"`
 	Notes         string             `json:"notes"`
@@ -18,11 +19,12 @@ type ReadingDTO struct {
 }
 
 type ReadingInsertDTO struct {
-	ReadingType   string    `json:"reading_type" validate:"required,oneof=manga book document article"`
-	ReadingStatus string    `json:"reading_status" validate:"required,oneof=ongoing completed paused"`
-	Notes         string    `json:"notes"`
-	CreatedAt     time.Time `json:"created_at" validate:"required"`
-	UpdatedAt     time.Time `json:"updated_at"`
+	ReadingType   string             `json:"reading_type" validate:"required,oneof=manga book custom_document"`
+	DocumentId    primitive.ObjectID `json:"document_id"  validate:"required"`
+	ReadingStatus string             `json:"reading_status" validate:"required,oneof=ongoing completed paused"`
+	Notes         string             `json:"notes"`
+	CreatedAt     time.Time          `json:"created_at" validate:"required"`
+	UpdatedAt     time.Time          `json:"updated_at"`
 }
 
 type ClientReadingInsertDTO struct {

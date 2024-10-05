@@ -15,6 +15,7 @@ func (rm ReadingMapper) InsertDtoToEntity(readingInsertDTO dtos.ReadingInsertDTO
 	return models.Reading{
 		Id:              primitive.NewObjectID(),
 		UserId:          userId,
+		DocumentId:      readingInsertDTO.DocumentId,
 		ReadingType:     readingInsertDTO.ReadingType,
 		ReadingsRecords: []models.ReadingRecord{},
 		ReadingStatus:   readingInsertDTO.ReadingStatus,

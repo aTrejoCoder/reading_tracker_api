@@ -9,7 +9,7 @@ import (
 type Reading struct {
 	Id              primitive.ObjectID `bson:"_id,omitempty"`
 	UserId          primitive.ObjectID `bson:"user_id"`
-	DocumentId      primitive.ObjectID `bson:"user_id"`
+	DocumentId      primitive.ObjectID `bson:"document_id"`
 	ReadingType     string             `bson:"reading_type"` // Book, Manga, CustomDoc
 	ReadingsRecords []ReadingRecord    `bson:"reading_records"`
 	ReadingStatus   string             `bson:"reading_status"`
