@@ -1,26 +1,32 @@
 package dtos
 
-import "go.mongodb.org/mongo-driver/bson/primitive"
+import (
+	"go.mongodb.org/mongo-driver/bson/primitive"
+)
 
-type DocumentDTO struct {
-	Id          primitive.ObjectID `json:"_id,omitempty"`
-	Title       string             `json:"title"`
-	Author      string             `json:"author"`
-	Description string             `json:"description"`
-	FileURL     string             `json:"file_url"`
-	FileType    string             `json:"file_type"`
-	Tags        []string           `json:"tags"`
-	Version     string             `json:"version"`
-	Status      string             `json:"status"`
+type CustomDocumentDTO struct {
+	Id          primitive.ObjectID `bson:"_id,omitempty"`
+	Title       string             `bson:"title"`
+	Author      string             `bson:"author"`
+	Description string             `bson:"description"`
+	Content     string             `bson:"content"`
+	FileURL     string             `bson:"file_url"`
+	URL         string             `bson:"url"`
+	Tags        []string           `bson:"tags"`
+	Category    string             `bson:"category"`
+	Version     string             `bson:"version"`
+	Status      string             `bson:"status"`
 }
 
-type DocumentInsertDTO struct {
-	Title       string   `json:"title" validate:"required"`
-	Author      string   `json:"author" validate:"required"`
-	Description string   `json:"description" validate:"required"`
-	FileURL     string   `json:"file_url"`
-	FileType    string   `json:"file_type" validate:"required"`
-	Tags        []string `json:"tags"`
-	Version     string   `json:"version"`
-	Status      string   `json:"status"`
+type CustomDocumentInsertDTO struct {
+	Title       string   `bson:"title" validate:"required"`
+	Author      string   `bson:"author" validate:"required"`
+	Description string   `bson:"description" validate:"omitempty,max=200"`
+	Content     string   `bson:"content" validate:"omitempty"`
+	FileURL     string   `bson:"file_url" validate:"omitempty,url"`
+	URL         string   `bson:"url" validate:"omitempty,url"`
+	Tags        []string `bson:"tags" validate:"omitempty,dive,max=50"`
+	Category    string   `bson:"category" validate:"omitempty"`
+	Version     string   `bson:"version" validate:"omitempty"`
+	Status      string   `bson:"status" validate:"omitempty,oneof='draft' 'published' 'archived'"`
 }

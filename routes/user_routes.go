@@ -8,7 +8,7 @@ import (
 const commonPath = "/v1/api"
 
 func UserRoutes(r *gin.Engine, userController controllers.UserController) {
-
+	// :id = readingId
 	usersPath := r.Group(commonPath + "/users")
 	usersPath.GET("/:id", userController.GetUserById())
 	usersPath.POST("/", userController.CreateUser())

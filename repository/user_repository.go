@@ -11,23 +11,23 @@ import (
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
-type UserRepository interface {
+type UserExtendRepository interface {
 	GetByEmail(ctx context.Context, email string) (*models.User, error)
 	GetByUsername(ctx context.Context, username string) (*models.User, error)
 	UpdateLastLogin(ctx context.Context, userId primitive.ObjectID) error
 }
 
-type userRepositoryImpl struct {
+type userExtendRepositoryImpl struct {
 	collection *mongo.Collection
 }
 
-func NewUserRepository(collection *mongo.Collection) UserRepository {
-	return &userRepositoryImpl{
+func NewUserRepository(collection *mongo.Collection) UserExtendRepository {
+	return &userExtendRepositoryImpl{
 		collection: collection,
 	}
 }
 
-func (ur userRepositoryImpl) GetByUsername(ctx context.Context, username string) (*models.User, error) {
+func (ur userExtendRepositoryImpl) GetByUsername(ctx context.Context, username string) (*models.User, error) {
 	var user models.User
 
 	err := ur.collection.FindOne(ctx, bson.M{"username": username}).Decode(&user)
@@ -42,7 +42,7 @@ func (ur userRepositoryImpl) GetByUsername(ctx context.Context, username string)
 	return &user, nil
 }
 
-func (ur userRepositoryImpl) GetByEmail(ctx context.Context, email string) (*models.User, error) {
+func (ur userExtendRepositoryImpl) GetByEmail(ctx context.Context, email string) (*models.User, error) {
 	var user models.User
 
 	err := ur.collection.FindOne(context.Background(), bson.M{"email": email}).Decode(&user)
@@ -57,7 +57,7 @@ func (ur userRepositoryImpl) GetByEmail(ctx context.Context, email string) (*mod
 	return &user, nil
 }
 
-func (ur userRepositoryImpl) UpdateLastLogin(ctx context.Context, userId primitive.ObjectID) error {
+func (ur userExtendRepositoryImpl) UpdateLastLogin(ctx context.Context, userId primitive.ObjectID) error {
 	filter := bson.M{"_id": userId}
 
 	update := bson.M{

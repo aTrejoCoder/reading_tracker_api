@@ -5,7 +5,6 @@ import (
 
 	"github.com/aTrejoCoder/reading_tracker_api/dtos"
 	"github.com/aTrejoCoder/reading_tracker_api/models"
-	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
 type MangaMapper struct {
@@ -20,12 +19,11 @@ func (mm MangaMapper) InsertDtoToEntity(mangaInsertDTO dtos.MangaInsertDTO) mode
 		CoverImageURL:   mangaInsertDTO.CoverImageURL,
 		Volume:          mangaInsertDTO.Volume,
 		Chapters:        mangaInsertDTO.Chapters,
-		Demogragphy:     mangaInsertDTO.Demogragphy,
+		Demography:      mangaInsertDTO.Demogragphy,
 		Genres:          mangaInsertDTO.Genres,
 		PublicationDate: mangaInsertDTO.PublicationDate,
 		Publisher:       mangaInsertDTO.Publisher,
 		Description:     mangaInsertDTO.Description,
-		ReadingList:     []primitive.ObjectID{},
 		CreatedAt:       now,
 		UpdatedAt:       now,
 	}
@@ -39,7 +37,7 @@ func (mm MangaMapper) EntityToDTO(manga models.Manga) dtos.MangaDTO {
 		CoverImageURL:   manga.CoverImageURL,
 		Volume:          manga.Volume,
 		Chapters:        manga.Chapters,
-		Demogragphy:     manga.Demogragphy,
+		Demogragphy:     manga.Demography,
 		Genres:          manga.Genres,
 		PublicationDate: manga.PublicationDate,
 		Publisher:       manga.Publisher,

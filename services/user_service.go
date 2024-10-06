@@ -19,12 +19,12 @@ type UserService interface {
 
 type userServiceImpl struct {
 	userMapper       mappers.UserMapper
-	userRepository   repository.UserRepository
+	userRepository   repository.UserExtendRepository
 	commonRepository repository.Repository[models.User]
 }
 
 func NewUserService(commonRepository repository.Repository[models.User],
-	userRepository repository.UserRepository) UserService {
+	userRepository repository.UserExtendRepository) UserService {
 	return &userServiceImpl{
 		commonRepository: commonRepository,
 		userRepository:   userRepository,
