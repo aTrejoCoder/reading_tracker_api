@@ -161,8 +161,42 @@ func (r *ReadingExtendRepository) GetReadingsByUserIdAndReadingType(
 		return nil, err
 	}
 
-	if len(readings) == 0 {
-		return nil, utils.ErrNotFound
+	return readings, nil
+}
+
+func (r *ReadingExtendRepository) GetReadingsByUserIdAndReadingStatus(
+	ctx context.Context,
+	userId primitive.ObjectID,
+	readingType string,
+	page, limit int64,
+	sortOrder int) ([]models.Reading, error) {
+
+	filter := bson.M{"user_id": userId, "reading_status": readingType}
+
+	skip := (page - 1) * limit
+	findOptions := options.Find().
+		SetSkip(skip).
+		SetLimit(limit).
+		SetSort(bson.D{{Key: "updated_at", Value: sortOrder}})
+
+	cursor, err := r.collection.Find(ctx, filter, findOptions)
+	if err != nil {
+		return nil, err
+	}
+	defer cursor.Close(ctx)
+
+	var readings []models.Reading
+
+	for cursor.Next(ctx) {
+		var reading models.Reading
+		if err := cursor.Decode(&reading); err != nil {
+			return nil, err
+		}
+		readings = append(readings, reading)
+	}
+
+	if err := cursor.Err(); err != nil {
+		return nil, err
 	}
 
 	return readings, nil

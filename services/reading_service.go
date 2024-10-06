@@ -16,6 +16,7 @@ type ReadingService interface {
 	GetReadingById(readingId primitive.ObjectID) (*dtos.ReadingDTO, error)
 	GetReadingsByUserId(userId primitive.ObjectID, page, limit int64, isAsc bool) ([]dtos.ReadingDTO, error)
 	GetReadingsByUserAndType(userId primitive.ObjectID, sortValue, readingType string, page, limit int64, isAsc bool) ([]dtos.ReadingDTO, error)
+	GetReadingsByUserAndStatus(userId primitive.ObjectID, readingStatus string, page, limit int64, isAsc bool) ([]dtos.ReadingDTO, error)
 
 	CreateReading(readingInsertDTO dtos.ReadingInsertDTO, userId primitive.ObjectID) error
 	UpdateReading(readingId primitive.ObjectID, userId primitive.ObjectID, readingInsertDTO dtos.ReadingInsertDTO) error
@@ -32,8 +33,6 @@ type readingServiceImpl struct {
 	customDocumentRepository repository.CustomDocumentRepository
 
 	readingMapper mappers.ReadingMapper
-	bookMapper    mappers.BookMapper
-	mangaMapper   mappers.MangaMapper
 }
 
 func NewReadingService(readingRepository repository.Repository[models.Reading],
@@ -59,9 +58,6 @@ func (rs readingServiceImpl) GetReadingById(readingId primitive.ObjectID) (*dtos
 	}
 
 	readingDTO := rs.readingMapper.EntityToDTO(*reading)
-	documentDTO := rs.fetchDocumentData(reading.ReadingType, reading.DocumentId)
-	readingDTO.DocumentData = documentDTO
-
 	return &readingDTO, nil
 }
 
@@ -79,14 +75,9 @@ func (rs readingServiceImpl) GetReadingsByUserId(userId primitive.ObjectID, page
 		return []dtos.ReadingDTO{}, err
 	}
 
-	var readingDTOs []dtos.ReadingDTO
+	readingDTOs := []dtos.ReadingDTO{}
 	for _, reading := range readings {
-
 		readingDTO := rs.readingMapper.EntityToDTO(reading)
-		documentDTO := rs.fetchDocumentData(reading.ReadingType, reading.DocumentId)
-
-		readingDTO.DocumentData = documentDTO
-
 		readingDTOs = append(readingDTOs, readingDTO)
 	}
 
@@ -107,7 +98,30 @@ func (rs readingServiceImpl) GetReadingsByUserAndType(userId primitive.ObjectID,
 		return []dtos.ReadingDTO{}, err
 	}
 
-	var readingDTOs []dtos.ReadingDTO
+	readingDTOs := []dtos.ReadingDTO{}
+	for _, reading := range readings {
+		readingDTO := rs.readingMapper.EntityToDTO(reading)
+		readingDTOs = append(readingDTOs, readingDTO)
+	}
+
+	return readingDTOs, nil
+}
+
+func (rs readingServiceImpl) GetReadingsByUserAndStatus(userId primitive.ObjectID, readingType string, page, limit int64, isAsc bool) ([]dtos.ReadingDTO, error) {
+	var sortOrder int
+	if isAsc {
+		sortOrder = 1 // asc
+	} else {
+		sortOrder = -1 // desc
+	}
+
+	readings, err := rs.readingExtendRepository.GetReadingsByUserIdAndReadingStatus(context.Background(), userId, readingType, page, limit, sortOrder)
+
+	if err != nil {
+		return []dtos.ReadingDTO{}, err
+	}
+
+	readingDTOs := []dtos.ReadingDTO{}
 	for _, reading := range readings {
 		readingDTO := rs.readingMapper.EntityToDTO(reading)
 		readingDTOs = append(readingDTOs, readingDTO)
@@ -193,26 +207,5 @@ func (rs readingServiceImpl) validateDocumentId(readingType string, documentId p
 		return customDocument.Title, err
 	default:
 		return "", errors.New("invalid reading type")
-	}
-}
-
-func (rs readingServiceImpl) fetchDocumentData(readingType string, documentId primitive.ObjectID) interface{} {
-	switch readingType {
-	case "book":
-		book, err := rs.bookRepository.GetByID(context.Background(), documentId)
-		if err != nil || book == nil {
-			return nil
-		}
-		return rs.bookMapper.EntityToDTO(*book)
-	case "manga":
-		manga, err := rs.mangaRepository.GetByID(context.Background(), documentId)
-		if err != nil || manga == nil {
-			return nil
-		}
-		return rs.mangaMapper.EntityToDTO(*manga)
-	case "custom_document":
-		return nil
-	default:
-		return nil
 	}
 }

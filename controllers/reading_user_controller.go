@@ -46,7 +46,7 @@ func (c ReadingUserController) GetMyReadings() gin.HandlerFunc {
 	}
 }
 
-func (c ReadingUserController) GetMyMangaReadings() gin.HandlerFunc {
+func (c ReadingUserController) GetMyReadingsByType() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		page, limit := utils.GetPaginationValuesFromRequest(ctx)
 
@@ -58,10 +58,23 @@ func (c ReadingUserController) GetMyMangaReadings() gin.HandlerFunc {
 		sortParam := ctx.DefaultQuery("sort", "asc")
 		isAsc := sortParam != "desc"
 
+		// Valid reading types (manga or book)
+		readingTypeParam := ctx.DefaultQuery("type", "book")
+		validTypes := map[string]bool{
+			"manga":           true,
+			"book":            true,
+			"custom_document": true,
+		}
+
+		if !validTypes[readingTypeParam] {
+			c.apiResponse.Error(ctx, "invalid reading type", http.StatusBadRequest)
+			return
+		}
+
 		// Sorted by Record Updates
 		sortOrder := "last_record_update"
 
-		readingDTOs, err := c.readingService.GetReadingsByUserAndType(userId, sortOrder, "manga", page, limit, isAsc)
+		readingDTOs, err := c.readingService.GetReadingsByUserAndType(userId, sortOrder, readingTypeParam, page, limit, isAsc)
 		if err != nil {
 			c.apiResponse.Error(ctx, err.Error(), http.StatusInternalServerError)
 			return
@@ -71,7 +84,7 @@ func (c ReadingUserController) GetMyMangaReadings() gin.HandlerFunc {
 	}
 }
 
-func (c ReadingUserController) GetMyBookReadings() gin.HandlerFunc {
+func (c ReadingUserController) GetMyReadingsByStatus() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		page, limit := utils.GetPaginationValuesFromRequest(ctx)
 
@@ -83,10 +96,19 @@ func (c ReadingUserController) GetMyBookReadings() gin.HandlerFunc {
 		sortParam := ctx.DefaultQuery("sort", "asc")
 		isAsc := sortParam != "desc"
 
-		// Sorted by Record Updates
-		sortOrder := "last_record_update"
+		statusParam := ctx.DefaultQuery("status", "ongoing")
+		validStatuses := map[string]bool{
+			"ongoing":   true,
+			"paused":    true,
+			"completed": true,
+		}
 
-		readingDTOs, err := c.readingService.GetReadingsByUserAndType(userId, sortOrder, "book", page, limit, isAsc)
+		if !validStatuses[statusParam] {
+			c.apiResponse.Error(ctx, "invalid reading status", http.StatusBadRequest)
+			return
+		}
+
+		readingDTOs, err := c.readingService.GetReadingsByUserAndStatus(userId, statusParam, page, limit, isAsc)
 		if err != nil {
 			c.apiResponse.Error(ctx, err.Error(), http.StatusInternalServerError)
 			return

@@ -11,7 +11,6 @@ type ReadingDTO struct {
 	Id            primitive.ObjectID `json:"id"`
 	UserId        string             `json:"client_id"`
 	Reading       string             `json:"reading_name"`
-	DocumentData  interface{}        `json:"document_data"`
 	ReadingType   string             `json:"reading_type"`
 	ReadingStatus string             `json:"reading_status"`
 	Notes         string             `json:"notes"`
