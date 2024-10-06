@@ -14,7 +14,8 @@ import (
 
 type ReadingService interface {
 	GetReadingById(readingId primitive.ObjectID) (*dtos.ReadingDTO, error)
-	GetReadingsByUserId(readingId primitive.ObjectID) ([]dtos.ReadingDTO, error)
+	GetReadingsByUserId(userId primitive.ObjectID, page, limit int64, isAsc bool) ([]dtos.ReadingDTO, error)
+	GetReadingsByUserAndType(userId primitive.ObjectID, sortValue, readingType string, page, limit int64, isAsc bool) ([]dtos.ReadingDTO, error)
 
 	CreateReading(readingInsertDTO dtos.ReadingInsertDTO, userId primitive.ObjectID) error
 	UpdateReading(readingId primitive.ObjectID, userId primitive.ObjectID, readingInsertDTO dtos.ReadingInsertDTO) error
@@ -27,23 +28,27 @@ type readingServiceImpl struct {
 	bookRepository    repository.Repository[models.Book]
 	userRepository    repository.Repository[models.User]
 
-	readingExtendRepository repository.ReadingExtendRepository
-	readingMapper           mappers.ReadingMapper
-	bookMapper              mappers.BookMapper
-	mangaMapper             mappers.MangaMapper
+	readingExtendRepository  repository.ReadingExtendRepository
+	customDocumentRepository repository.CustomDocumentRepository
+
+	readingMapper mappers.ReadingMapper
+	bookMapper    mappers.BookMapper
+	mangaMapper   mappers.MangaMapper
 }
 
 func NewReadingService(readingRepository repository.Repository[models.Reading],
 	readingExtendRepository repository.ReadingExtendRepository,
+	customDocumentRepository repository.CustomDocumentRepository,
 	mangaRepository repository.Repository[models.Manga],
 	bookRepository repository.Repository[models.Book],
 	userRepository repository.Repository[models.User]) ReadingService {
 	return &readingServiceImpl{
-		readingRepository:       readingRepository,
-		readingExtendRepository: readingExtendRepository,
-		mangaRepository:         mangaRepository,
-		bookRepository:          bookRepository,
-		userRepository:          userRepository,
+		readingRepository:        readingRepository,
+		readingExtendRepository:  readingExtendRepository,
+		mangaRepository:          mangaRepository,
+		bookRepository:           bookRepository,
+		userRepository:           userRepository,
+		customDocumentRepository: customDocumentRepository,
 	}
 }
 
@@ -60,8 +65,15 @@ func (rs readingServiceImpl) GetReadingById(readingId primitive.ObjectID) (*dtos
 	return &readingDTO, nil
 }
 
-func (rs readingServiceImpl) GetReadingsByUserId(userId primitive.ObjectID) ([]dtos.ReadingDTO, error) {
-	readings, err := rs.readingExtendRepository.GetReadingsByUserId(context.Background(), userId)
+func (rs readingServiceImpl) GetReadingsByUserId(userId primitive.ObjectID, page, limit int64, isAsc bool) ([]dtos.ReadingDTO, error) {
+	var sortOrder int
+	if isAsc {
+		sortOrder = 1 // asc
+	} else {
+		sortOrder = -1 // desc
+	}
+
+	readings, err := rs.readingExtendRepository.GetReadingsByUserId(context.Background(), userId, page, limit, sortOrder)
 
 	if err != nil {
 		return []dtos.ReadingDTO{}, err
@@ -81,13 +93,45 @@ func (rs readingServiceImpl) GetReadingsByUserId(userId primitive.ObjectID) ([]d
 	return readingDTOs, nil
 }
 
+func (rs readingServiceImpl) GetReadingsByUserAndType(userId primitive.ObjectID, sortValue, readingType string, page, limit int64, isAsc bool) ([]dtos.ReadingDTO, error) {
+	var sortOrder int
+	if isAsc {
+		sortOrder = 1 // asc
+	} else {
+		sortOrder = -1 // desc
+	}
+
+	readings, err := rs.readingExtendRepository.GetReadingsByUserIdAndReadingType(context.Background(), userId, readingType, sortValue, page, limit, sortOrder)
+
+	if err != nil {
+		return []dtos.ReadingDTO{}, err
+	}
+
+	var readingDTOs []dtos.ReadingDTO
+	for _, reading := range readings {
+		readingDTO := rs.readingMapper.EntityToDTO(reading)
+		readingDTOs = append(readingDTOs, readingDTO)
+	}
+
+	return readingDTOs, nil
+}
+
 func (rs readingServiceImpl) CreateReading(readingInsertDTO dtos.ReadingInsertDTO, userId primitive.ObjectID) error {
-	err := rs.validateDocumentId(readingInsertDTO.ReadingType, readingInsertDTO.DocumentId)
+	documentName, err := rs.validateDocumentId(readingInsertDTO.ReadingType, readingInsertDTO.DocumentId, userId)
 	if err != nil {
 		return err
 	}
 
-	newReading := rs.readingMapper.InsertDtoToEntity(readingInsertDTO, userId)
+	isReadingExists, err := rs.readingExtendRepository.IsReadingExistsForUser(context.TODO(), userId, readingInsertDTO.DocumentId)
+	if err != nil {
+		return err
+	}
+
+	if isReadingExists {
+		return utils.ErrDuplicated
+	}
+
+	newReading := rs.readingMapper.InsertDtoToEntity(readingInsertDTO, userId, documentName)
 
 	if _, err := rs.readingRepository.Create(context.TODO(), &newReading); err != nil {
 		return err
@@ -97,7 +141,7 @@ func (rs readingServiceImpl) CreateReading(readingInsertDTO dtos.ReadingInsertDT
 }
 
 func (rs readingServiceImpl) UpdateReading(readingId primitive.ObjectID, userId primitive.ObjectID, readingInsertDTO dtos.ReadingInsertDTO) error {
-	err := rs.validateDocumentId(readingInsertDTO.ReadingType, readingInsertDTO.DocumentId)
+	_, err := rs.validateDocumentId(readingInsertDTO.ReadingType, readingInsertDTO.DocumentId, userId)
 	if err != nil {
 		return err
 	}
@@ -136,18 +180,19 @@ func (rs readingServiceImpl) DeleteReading(readingId primitive.ObjectID, userId 
 	return nil
 }
 
-func (rs readingServiceImpl) validateDocumentId(readingType string, documentId primitive.ObjectID) error {
+func (rs readingServiceImpl) validateDocumentId(readingType string, documentId primitive.ObjectID, userId primitive.ObjectID) (string, error) {
 	switch readingType {
 	case "book":
-		_, err := rs.bookRepository.GetByID(context.Background(), documentId)
-		return err
+		book, err := rs.bookRepository.GetByID(context.Background(), documentId)
+		return book.Name, err
 	case "manga":
-		_, err := rs.mangaRepository.GetByID(context.Background(), documentId)
-		return err
+		manga, err := rs.mangaRepository.GetByID(context.Background(), documentId)
+		return manga.Title, err
 	case "custom_document":
-		return nil
+		customDocument, err := rs.customDocumentRepository.GetById(context.Background(), userId, documentId)
+		return customDocument.Title, err
 	default:
-		return errors.New("invalid reading type")
+		return "", errors.New("invalid reading type")
 	}
 }
 

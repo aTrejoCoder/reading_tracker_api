@@ -43,7 +43,7 @@ func main() {
 	mangaService := services.NewMangaService(*commonMangaRepository)
 
 	readingListService := services.NewReadingListService(*readingListRepository)
-	readingService := services.NewReadingService(*commonReadingRepository, *readingExtendService, *commonMangaRepository, *commonBookRepository, *commonUserRepository)
+	readingService := services.NewReadingService(*commonReadingRepository, *readingExtendService, *commonDocumentRepository, *commonMangaRepository, *commonBookRepository, *commonUserRepository)
 	readingRecordService := services.NewReadingRecordService(*commonReadingRepository, *readingExtendService)
 	documentService := services.NewCustomDocumentService(*commonDocumentRepository)
 

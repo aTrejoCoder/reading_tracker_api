@@ -11,17 +11,19 @@ import (
 type ReadingMapper struct {
 }
 
-func (rm ReadingMapper) InsertDtoToEntity(readingInsertDTO dtos.ReadingInsertDTO, userId primitive.ObjectID) models.Reading {
+func (rm ReadingMapper) InsertDtoToEntity(readingInsertDTO dtos.ReadingInsertDTO, userId primitive.ObjectID, readingName string) models.Reading {
 	return models.Reading{
 		Id:              primitive.NewObjectID(),
 		UserId:          userId,
+		ReadingName:     "Reading: " + readingName,
 		DocumentId:      readingInsertDTO.DocumentId,
 		ReadingType:     readingInsertDTO.ReadingType,
 		ReadingsRecords: []models.ReadingRecord{},
 		ReadingStatus:   readingInsertDTO.ReadingStatus,
 		Notes:           readingInsertDTO.Notes,
-		CreatedAt:       readingInsertDTO.CreatedAt,
-		UpdatedAt:       readingInsertDTO.UpdatedAt,
+		CreatedAt:       time.Now().UTC(),
+		UpdatedAt:       time.Now().UTC(),
+		LatRecordUpdate: time.Now().UTC(),
 	}
 }
 
@@ -38,6 +40,7 @@ func (rm ReadingMapper) EntityToDTO(reading models.Reading) dtos.ReadingDTO {
 	return dtos.ReadingDTO{
 		Id:            reading.Id,
 		ReadingType:   reading.ReadingType,
+		Reading:       reading.ReadingName,
 		UserId:        reading.UserId.Hex(),
 		ReadingStatus: reading.ReadingStatus,
 		Notes:         reading.Notes,

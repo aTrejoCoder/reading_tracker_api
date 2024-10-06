@@ -47,6 +47,21 @@ func (rls readingListServiceImpl) GetReadingListsByUserId(userId primitive.Objec
 	return readingListDTOs, nil
 }
 
+func (rls readingListServiceImpl) GetBookReadingListsByUserId(userId primitive.ObjectID) ([]dtos.ReadingListDTO, error) {
+	readingLists, err := rls.readingListRepository.GetByUserId(context.TODO(), userId)
+	if err != nil {
+		return nil, err
+	}
+
+	readingListDTOs := []dtos.ReadingListDTO{}
+	for _, readingList := range readingLists {
+		readingListDTO := rls.readingListMapper.EntityToDTO(readingList)
+		readingListDTOs = append(readingListDTOs, readingListDTO)
+	}
+
+	return readingListDTOs, nil
+}
+
 func (rls readingListServiceImpl) GetReadingListById(listId primitive.ObjectID, userId primitive.ObjectID) (*dtos.ReadingListDTO, error) {
 	readingLists, err := rls.readingListRepository.GetByUserId(context.TODO(), userId)
 	if err != nil {

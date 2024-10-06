@@ -3,6 +3,7 @@ package services
 import (
 	"context"
 	"log"
+	"time"
 
 	"github.com/aTrejoCoder/reading_tracker_api/dtos"
 	"github.com/aTrejoCoder/reading_tracker_api/mappers"
@@ -47,6 +48,9 @@ func (rrs readingRecordServiceImpl) CreateRecord(recordInsertDTO dtos.ReadingRec
 	update := bson.M{
 		"$push": bson.M{
 			"reading_records": newRecord,
+		},
+		"$set": bson.M{
+			"last_record_update": time.Now().UTC(),
 		},
 	}
 

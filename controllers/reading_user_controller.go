@@ -26,12 +26,17 @@ func NewReadingUserController(readingService services.ReadingService) *ReadingUs
 
 func (c ReadingUserController) GetMyReadings() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
+		page, limit := utils.GetPaginationValuesFromRequest(ctx)
+
+		sortParam := ctx.DefaultQuery("sort", "asc")
+		isAsc := sortParam != "desc"
+
 		userId, isUserIdRetrieved := utils.GetUserIdFromRequest(ctx, c.apiResponse)
 		if !isUserIdRetrieved {
 			return
 		}
 
-		readingDTOs, err := c.readingService.GetReadingsByUserId(userId)
+		readingDTOs, err := c.readingService.GetReadingsByUserId(userId, page, limit, isAsc)
 		if err != nil {
 			c.apiResponse.Error(ctx, err.Error(), http.StatusInternalServerError)
 			return
@@ -43,12 +48,20 @@ func (c ReadingUserController) GetMyReadings() gin.HandlerFunc {
 
 func (c ReadingUserController) GetMyMangaReadings() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
+		page, limit := utils.GetPaginationValuesFromRequest(ctx)
+
 		userId, isUserIdRetrieved := utils.GetUserIdFromRequest(ctx, c.apiResponse)
 		if !isUserIdRetrieved {
 			return
 		}
 
-		readingDTOs, err := c.readingService.GetReadingsByUserId(userId)
+		sortParam := ctx.DefaultQuery("sort", "asc")
+		isAsc := sortParam != "desc"
+
+		// Sorted by Record Updates
+		sortOrder := "last_record_update"
+
+		readingDTOs, err := c.readingService.GetReadingsByUserAndType(userId, sortOrder, "manga", page, limit, isAsc)
 		if err != nil {
 			c.apiResponse.Error(ctx, err.Error(), http.StatusInternalServerError)
 			return
@@ -60,12 +73,20 @@ func (c ReadingUserController) GetMyMangaReadings() gin.HandlerFunc {
 
 func (c ReadingUserController) GetMyBookReadings() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
+		page, limit := utils.GetPaginationValuesFromRequest(ctx)
+
 		userId, isUserIdRetrieved := utils.GetUserIdFromRequest(ctx, c.apiResponse)
 		if !isUserIdRetrieved {
 			return
 		}
 
-		readingDTOs, err := c.readingService.GetReadingsByUserId(userId)
+		sortParam := ctx.DefaultQuery("sort", "asc")
+		isAsc := sortParam != "desc"
+
+		// Sorted by Record Updates
+		sortOrder := "last_record_update"
+
+		readingDTOs, err := c.readingService.GetReadingsByUserAndType(userId, sortOrder, "book", page, limit, isAsc)
 		if err != nil {
 			c.apiResponse.Error(ctx, err.Error(), http.StatusInternalServerError)
 			return
@@ -88,8 +109,16 @@ func (c ReadingUserController) StartReading() gin.HandlerFunc {
 		}
 
 		if err := c.readingService.CreateReading(readingInsertDTO, userId); err != nil {
-			c.apiResponse.ServerError(ctx, err.Error())
-			return
+			if errors.Is(err, utils.ErrNotFound) {
+				c.apiResponse.NotFound(ctx, "document")
+				return
+			} else if errors.Is(err, utils.ErrDuplicated) {
+				c.apiResponse.Error(ctx, "The requested document aleady has reading", http.StatusBadRequest)
+				return
+			} else {
+				c.apiResponse.ServerError(ctx, err.Error())
+				return
+			}
 		}
 
 		c.apiResponse.Created(ctx, nil, "Reading")

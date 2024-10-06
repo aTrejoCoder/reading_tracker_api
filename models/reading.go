@@ -9,6 +9,7 @@ import (
 type Reading struct {
 	Id              primitive.ObjectID `bson:"_id,omitempty"`
 	UserId          primitive.ObjectID `bson:"user_id"`
+	ReadingName     string             `bson:"reading_name"`
 	DocumentId      primitive.ObjectID `bson:"document_id"`
 	ReadingType     string             `bson:"reading_type"` // Book, Manga, CustomDoc
 	ReadingsRecords []ReadingRecord    `bson:"reading_records"`
@@ -16,6 +17,7 @@ type Reading struct {
 	Notes           string             `bson:"notes"`
 	CreatedAt       time.Time          `bson:"created_at"`
 	UpdatedAt       time.Time          `bson:"updated_at"`
+	LatRecordUpdate time.Time          `bson:"last_record_update"`
 }
 
 type ReadingRecord struct {

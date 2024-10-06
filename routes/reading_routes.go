@@ -19,6 +19,8 @@ func ReadingUserRoutes(r *gin.Engine, userReadingController controllers.ReadingU
 	// :id = readingId
 	usersPath := r.Group(commonPath + "/user-readings")
 	usersPath.GET("/", userReadingController.GetMyReadings())
+	usersPath.GET("/by-book", userReadingController.GetMyBookReadings())
+	usersPath.GET("/by-manga", userReadingController.GetMyMangaReadings())
 	usersPath.POST("/", userReadingController.StartReading())
 	usersPath.PUT("/:id", userReadingController.UpdateMyReading())
 	usersPath.DELETE("/:id", userReadingController.DeleteMyReading())

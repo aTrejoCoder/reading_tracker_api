@@ -93,10 +93,16 @@ func (r *ReadingExtendRepository) UpdateRecordProperties(ctx context.Context, re
 	return mongoResult, nil
 }
 
-func (r *ReadingExtendRepository) GetReadingsByUserId(ctx context.Context, userId primitive.ObjectID) ([]models.Reading, error) {
+func (r *ReadingExtendRepository) GetReadingsByUserId(ctx context.Context, userId primitive.ObjectID, page, limit int64, sortOrder int) ([]models.Reading, error) {
 	filter := bson.M{"user_id": userId}
 
-	cursor, err := r.collection.Find(ctx, filter)
+	skip := (page - 1) * limit
+	findOptions := options.Find().
+		SetSkip(skip).
+		SetLimit(limit).
+		SetSort(bson.D{{Key: "created_at", Value: sortOrder}})
+
+	cursor, err := r.collection.Find(ctx, filter, findOptions)
 	if err != nil {
 		return nil, err
 	}
@@ -117,4 +123,61 @@ func (r *ReadingExtendRepository) GetReadingsByUserId(ctx context.Context, userI
 	}
 
 	return readings, nil
+}
+
+func (r *ReadingExtendRepository) GetReadingsByUserIdAndReadingType(
+	ctx context.Context,
+	userId primitive.ObjectID,
+	readingType string,
+	sortValue string, // created_at, updated_at, last_record_update
+	page, limit int64,
+	sortOrder int) ([]models.Reading, error) {
+
+	filter := bson.M{"user_id": userId, "reading_type": readingType}
+
+	skip := (page - 1) * limit
+	findOptions := options.Find().
+		SetSkip(skip).
+		SetLimit(limit).
+		SetSort(bson.D{{Key: sortValue, Value: sortOrder}})
+
+	cursor, err := r.collection.Find(ctx, filter, findOptions)
+	if err != nil {
+		return nil, err
+	}
+	defer cursor.Close(ctx)
+
+	var readings []models.Reading
+
+	for cursor.Next(ctx) {
+		var reading models.Reading
+		if err := cursor.Decode(&reading); err != nil {
+			return nil, err
+		}
+		readings = append(readings, reading)
+	}
+
+	if err := cursor.Err(); err != nil {
+		return nil, err
+	}
+
+	if len(readings) == 0 {
+		return nil, utils.ErrNotFound
+	}
+
+	return readings, nil
+}
+
+func (r *ReadingExtendRepository) IsReadingExistsForUser(ctx context.Context, userId, documentId primitive.ObjectID) (bool, error) {
+	filter := bson.M{
+		"user_id":     userId,
+		"document_id": documentId,
+	}
+
+	count, err := r.collection.CountDocuments(ctx, filter)
+	if err != nil {
+		return false, err
+	}
+
+	return count > 0, nil
 }

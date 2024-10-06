@@ -27,13 +27,19 @@ func NewRecordController(recordService services.ReadingRecordService) *RecordCon
 
 func (c RecordController) CreateRecord() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
+		userId, err := utils.GetObjectIdFromUrlQuery(ctx, "userId")
+		if err != nil {
+			c.apiResponse.Error(ctx, err.Error(), http.StatusBadRequest)
+			return
+		}
+
 		var recordInserDTO dtos.ReadingRecordInsertDTO
 
 		if isStructValid := utils.BindAndValidate(ctx, &recordInserDTO, c.validator, c.apiResponse); !isStructValid {
 			return
 		}
 
-		if err := c.recordService.CreateRecord(recordInserDTO, primitive.NewObjectID()); err != nil {
+		if err := c.recordService.CreateRecord(recordInserDTO, userId); err != nil {
 			if !errors.Is(err, utils.ErrNotFound) {
 				c.apiResponse.Error(ctx, err.Error(), http.StatusInternalServerError)
 				return
@@ -89,13 +95,19 @@ func (c RecordController) DeleteRecord() gin.HandlerFunc {
 			return
 		}
 
+		userId, err := utils.GetObjectIdFromUrlQuery(ctx, "userId")
+		if err != nil {
+			c.apiResponse.Error(ctx, err.Error(), http.StatusBadRequest)
+			return
+		}
+
 		readingId, err := primitive.ObjectIDFromHex(readingIdStr)
 		if err != nil {
 			c.apiResponse.Error(ctx, "readingId must be an objectId", http.StatusBadRequest)
 			return
 		}
 
-		if err := c.recordService.DeleteRecord(readingId, primitive.NewObjectID(), recordId); err != nil {
+		if err := c.recordService.DeleteRecord(readingId, userId, recordId); err != nil {
 			if !errors.Is(err, utils.ErrNotFound) {
 				c.apiResponse.Error(ctx, err.Error(), http.StatusInternalServerError)
 				return
