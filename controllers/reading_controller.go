@@ -25,6 +25,15 @@ func NewReadingControler(readingService services.ReadingService) *ReadingControl
 	}
 }
 
+// GetReadingById retrieves a reading by its ID
+// @Summary Get Reading by ID
+// @Description Get a reading by its ID
+// @Tags Readings
+// @Param id path string true "Reading ID"
+// @Success 200 {object} dtos.ReadingDTO "Successful response"
+// @Failure 400 {object} utils.ApiResponse "Invalid ID"
+// @Failure 500 {object} utils.ApiResponse "Internal server error"
+// @Router /readings/{id} [get]
 func (c ReadingController) GetReadingById() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		readingId, err := utils.GetObjectIdFromUrlParam(ctx)
@@ -43,6 +52,18 @@ func (c ReadingController) GetReadingById() gin.HandlerFunc {
 	}
 }
 
+// CreateReading creates a new reading
+// @Summary Create Reading
+// @Description Create a new reading
+// @Tags Readings
+// @Accept json
+// @Produce json
+// @Param userId query string true "User ID"
+// @Param reading body dtos.ReadingInsertDTO true "Reading data"
+// @Success 201 {object} utils.ApiResponse "Reading created"
+// @Failure 400 {object} utils.ApiResponse "Invalid input"
+// @Failure 500 {object} utils.ApiResponse "Internal server error"
+// @Router /readings [post]
 func (c ReadingController) CreateReading() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		userIdStr := ctx.Query("userId")
@@ -71,6 +92,20 @@ func (c ReadingController) CreateReading() gin.HandlerFunc {
 	}
 }
 
+// UpdateReading updates an existing reading
+// @Summary Update Reading
+// @Description Update a reading by its ID
+// @Tags Readings
+// @Accept json
+// @Produce json
+// @Param id path string true "Reading ID"
+// @Param userId query string true "User ID"
+// @Param reading body dtos.ReadingInsertDTO true "Reading data"
+// @Success 200 {object} utils.ApiResponse "Reading updated"
+// @Failure 400 {object} utils.ApiResponse "Invalid input"
+// @Failure 404 {object} utils.ApiResponse "Reading not found"
+// @Failure 500 {object} utils.ApiResponse "Internal server error"
+// @Router /readings/{id} [put]
 func (c ReadingController) UpdateReading() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		readingId, err := utils.GetObjectIdFromUrlParam(ctx)
@@ -110,6 +145,17 @@ func (c ReadingController) UpdateReading() gin.HandlerFunc {
 	}
 }
 
+// DeleteReading deletes a reading
+// @Summary Delete Reading
+// @Description Delete a reading by its ID
+// @Tags Readings
+// @Param id path string true "Reading ID"
+// @Param userId query string true "User ID"
+// @Success 204 {object} utils.ApiResponse "Reading deleted"
+// @Failure 400 {object} utils.ApiResponse "Invalid ID"
+// @Failure 404 {object} utils.ApiResponse "Reading not found"
+// @Failure 500 {object} utils.ApiResponse "Internal server error"
+// @Router /readings/{id} [delete]
 func (c ReadingController) DeleteReading() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		readingId, err := utils.GetObjectIdFromUrlParam(ctx)

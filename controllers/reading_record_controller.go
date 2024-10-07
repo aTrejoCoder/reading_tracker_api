@@ -25,6 +25,18 @@ func NewRecordController(recordService services.ReadingRecordService) *RecordCon
 	}
 }
 
+// CreateRecord godoc
+// @Summary Create a new reading record
+// @Description Create a new reading record for the user
+// @Tags ReadingRecord
+// @Accept json
+// @Produce json
+// @Param userId query string true "User ID"
+// @Param body body dtos.ReadingRecordInsertDTO true "Reading Record details"
+// @Success 201 {object} utils.ApiResponse "Reading Record created"
+// @Failure 400 {object} utils.ApiResponse "Invalid request body"
+// @Failure 404 {object} utils.ApiResponse "Reading not found"
+// @Router /records [post]
 func (c RecordController) CreateRecord() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		userId, err := utils.GetObjectIdFromUrlQuery(ctx, "userId")
@@ -53,6 +65,18 @@ func (c RecordController) CreateRecord() gin.HandlerFunc {
 	}
 }
 
+// UpdateRecord godoc
+// @Summary Update an existing reading record
+// @Description Update the details of a reading record
+// @Tags ReadingRecord
+// @Accept json
+// @Produce json
+// @Param recordId path string true "Record ID"
+// @Param body body dtos.ReadingRecordInsertDTO true "Updated Reading Record details"
+// @Success 200 {object} utils.ApiResponse "Reading Record updated"
+// @Failure 400 {object} utils.ApiResponse "Invalid request body"
+// @Failure 404 {object} utils.ApiResponse "Reading not found"
+// @Router /records/{recordId} [put]
 func (c RecordController) UpdateRecord() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		recordId, err := utils.GetObjectIdFromUrlParam(ctx)
@@ -81,6 +105,19 @@ func (c RecordController) UpdateRecord() gin.HandlerFunc {
 	}
 }
 
+// DeleteRecord godoc
+// @Summary Delete a reading record
+// @Description Delete a specific reading record
+// @Tags ReadingRecord
+// @Accept json
+// @Produce json
+// @Param recordId path string true "Record ID"
+// @Param readingId query string true "Reading ID"
+// @Param userId query string true "User ID"
+// @Success 200 {object} utils.ApiResponse "Reading Record deleted"
+// @Failure 400 {object} utils.ApiResponse "Invalid request parameters"
+// @Failure 404 {object} utils.ApiResponse "Reading not found"
+// @Router /records/{recordId} [delete]
 func (c RecordController) DeleteRecord() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		recordId, err := utils.GetObjectIdFromUrlParam(ctx)

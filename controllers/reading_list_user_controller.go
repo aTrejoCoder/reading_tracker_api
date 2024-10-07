@@ -24,6 +24,15 @@ func NewReadingListUserController(readingListService services.ReadingListService
 	}
 }
 
+// GetMyReadingLists godoc
+// @Summary Get reading lists for the authenticated user
+// @Description Retrieve all reading lists associated with the authenticated user
+// @Tags ReadingList
+// @Accept json
+// @Produce json
+// @Success 200 {object} utils.ApiResponse "Successful retrieval"
+// @Failure 404 {object} utils.ApiResponse "User not found"
+// @Router /my-reading-lists [get]
 func (c ReadingListUserController) GetMyReadingLists() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		userId, isUserIdRetrieved := utils.GetUserIdFromRequest(ctx, c.apiResponse)
@@ -45,6 +54,17 @@ func (c ReadingListUserController) GetMyReadingLists() gin.HandlerFunc {
 	}
 }
 
+// GetMyReadingListById godoc
+// @Summary Get a specific reading list by ID for the authenticated user
+// @Description Retrieve a reading list associated with the authenticated user by list ID
+// @Tags ReadingList
+// @Accept json
+// @Produce json
+// @Param listId query string true "Reading List ID"
+// @Success 200 {object} utils.ApiResponse "Successful retrieval"
+// @Failure 400 {object} utils.ApiResponse "Invalid list ID"
+// @Failure 404 {object} utils.ApiResponse "Reading List not found"
+// @Router /my-reading-lists [get]
 func (c ReadingListUserController) GetMyReadingListById() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		userId, isUserIdRetrieved := utils.GetUserIdFromRequest(ctx, c.apiResponse)
@@ -72,6 +92,17 @@ func (c ReadingListUserController) GetMyReadingListById() gin.HandlerFunc {
 	}
 }
 
+// AddReadingToList godoc
+// @Summary Add readings to a user's reading list
+// @Description Add readings to the authenticated user's specified reading list
+// @Tags ReadingList
+// @Accept json
+// @Produce json
+// @Param body body dtos.UpdateReadingsToListDTO true "Readings to be added"
+// @Success 200 {object} utils.ApiResponse "Successful addition"
+// @Failure 400 {object} utils.ApiResponse "Invalid request body"
+// @Failure 404 {object} utils.ApiResponse "Reading List not found"
+// @Router /my-reading-lists [post]
 func (c ReadingListUserController) AddReadingToList() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		userId, isUserIdRetrieved := utils.GetUserIdFromRequest(ctx, c.apiResponse)
@@ -93,10 +124,21 @@ func (c ReadingListUserController) AddReadingToList() gin.HandlerFunc {
 			return
 		}
 
-		c.apiResponse.OK(ctx, nil, "Readings Succesfully Added")
+		c.apiResponse.OK(ctx, nil, "Readings Successfully Added")
 	}
 }
 
+// RemoveReadingToList godoc
+// @Summary Remove readings from a user's reading list
+// @Description Remove readings from the authenticated user's specified reading list
+// @Tags ReadingList
+// @Accept json
+// @Produce json
+// @Param body body dtos.UpdateReadingsToListDTO true "Readings to be removed"
+// @Success 200 {object} utils.ApiResponse "Successful removal"
+// @Failure 400 {object} utils.ApiResponse "Invalid request body"
+// @Failure 404 {object} utils.ApiResponse "Reading List not found"
+// @Router /my-reading-lists [delete]
 func (c ReadingListUserController) RemoveReadingToList() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		userId, isUserIdRetrieved := utils.GetUserIdFromRequest(ctx, c.apiResponse)
@@ -118,10 +160,21 @@ func (c ReadingListUserController) RemoveReadingToList() gin.HandlerFunc {
 			return
 		}
 
-		c.apiResponse.OK(ctx, nil, "Readings Succesfully Removed")
+		c.apiResponse.OK(ctx, nil, "Readings Successfully Removed")
 	}
 }
 
+// CreateReadingList godoc
+// @Summary Create a new reading list for the authenticated user
+// @Description Create a new reading list associated with the authenticated user
+// @Tags ReadingList
+// @Accept json
+// @Produce json
+// @Param body body dtos.ReadingListInsertDTO true "Reading List details"
+// @Success 200 {object} utils.ApiResponse "Successful creation"
+// @Failure 400 {object} utils.ApiResponse "Invalid request body"
+// @Failure 404 {object} utils.ApiResponse "User not found"
+// @Router /my-reading-lists [post]
 func (c ReadingListUserController) CreateReadingList() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		userId, isUserIdRetrieved := utils.GetUserIdFromRequest(ctx, c.apiResponse)
@@ -147,6 +200,18 @@ func (c ReadingListUserController) CreateReadingList() gin.HandlerFunc {
 	}
 }
 
+// UpdateMyReadingList godoc
+// @Summary Update an existing reading list for the authenticated user
+// @Description Update the details of a specific reading list associated with the authenticated user
+// @Tags ReadingList
+// @Accept json
+// @Produce json
+// @Param readingId path string true "Reading List ID"
+// @Param body body dtos.ReadingListInsertDTO true "Updated Reading List details"
+// @Success 200 {object} utils.ApiResponse "Successful update"
+// @Failure 400 {object} utils.ApiResponse "Invalid request body"
+// @Failure 404 {object} utils.ApiResponse "Reading List not found"
+// @Router /my-reading-lists/{readingId} [put]
 func (c ReadingListUserController) UpdateMyReadingList() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		userId, isUserIdRetrieved := utils.GetUserIdFromRequest(ctx, c.apiResponse)
@@ -178,6 +243,16 @@ func (c ReadingListUserController) UpdateMyReadingList() gin.HandlerFunc {
 	}
 }
 
+// DeleteMyReadingList godoc
+// @Summary Delete a reading list for the authenticated user
+// @Description Delete a specific reading list associated with the authenticated user
+// @Tags ReadingList
+// @Accept json
+// @Produce json
+// @Param readingId path string true "Reading List ID"
+// @Success 200 {object} utils.ApiResponse "Successful deletion"
+// @Failure 404 {object} utils.ApiResponse "Reading List not found"
+// @Router /my-reading-lists/{readingId} [delete]
 func (c ReadingListUserController) DeleteMyReadingList() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		userId, isUserIdRetrieved := utils.GetUserIdFromRequest(ctx, c.apiResponse)

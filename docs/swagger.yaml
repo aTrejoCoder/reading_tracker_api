@@ -1,0 +1,2266 @@
+definitions:
+  dtos.BookDTO:
+    properties:
+      _id:
+        type: string
+      ISBN:
+        type: string
+      author:
+        type: string
+      cover_image_url:
+        type: string
+      description:
+        type: string
+      edition:
+        type: string
+      genres:
+        items:
+          type: string
+        type: array
+      language:
+        type: string
+      name:
+        type: string
+      pages:
+        type: integer
+      publication_date:
+        type: string
+      publisher:
+        type: string
+    type: object
+  dtos.BookInsertDTO:
+    properties:
+      ISBN:
+        type: string
+      author:
+        type: string
+      cover_image_url:
+        type: string
+      description:
+        type: string
+      edition:
+        type: string
+      genres:
+        items:
+          type: string
+        type: array
+      language:
+        type: string
+      name:
+        type: string
+      pages:
+        type: integer
+      publication_date:
+        type: string
+      publisher:
+        type: string
+    required:
+    - author
+    - language
+    - name
+    - pages
+    type: object
+  dtos.CustomDocumentDTO:
+    properties:
+      author:
+        type: string
+      category:
+        type: string
+      content:
+        type: string
+      description:
+        type: string
+      fileURL:
+        type: string
+      id:
+        type: string
+      status:
+        type: string
+      tags:
+        items:
+          type: string
+        type: array
+      title:
+        type: string
+      url:
+        type: string
+      version:
+        type: string
+    type: object
+  dtos.CustomDocumentInsertDTO:
+    properties:
+      author:
+        type: string
+      category:
+        type: string
+      content:
+        type: string
+      description:
+        maxLength: 200
+        type: string
+      fileURL:
+        type: string
+      status:
+        enum:
+        - draft
+        - published
+        - archived
+        type: string
+      tags:
+        items:
+          type: string
+        type: array
+      title:
+        type: string
+      url:
+        type: string
+      version:
+        type: string
+    required:
+    - author
+    - title
+    type: object
+  dtos.LoginDTO:
+    properties:
+      login_identifier:
+        description: username or email
+        type: string
+      password:
+        type: string
+    required:
+    - login_identifier
+    - password
+    type: object
+  dtos.MangaDTO:
+    properties:
+      _id:
+        type: string
+      author:
+        type: string
+      chapters:
+        type: integer
+      cover_image_url:
+        type: string
+      demograhpy:
+        type: string
+      description:
+        type: string
+      genres:
+        items:
+          type: string
+        type: array
+      publication_date:
+        type: string
+      publisher:
+        type: string
+      title:
+        type: string
+      volume:
+        type: integer
+    type: object
+  dtos.MangaInsertDTO:
+    properties:
+      author:
+        type: string
+      chapters:
+        type: integer
+      cover_image_url:
+        type: string
+      demograhpy:
+        type: string
+      description:
+        type: string
+      genres:
+        items:
+          type: string
+        type: array
+      publication_date:
+        type: string
+      publisher:
+        type: string
+      title:
+        type: string
+      volume:
+        type: integer
+    required:
+    - author
+    - chapters
+    - demograhpy
+    - genres
+    - title
+    - volume
+    type: object
+  dtos.ProfileDTO:
+    properties:
+      biography:
+        type: string
+      fullName:
+        type: string
+      profileCoverURL:
+        type: string
+      profileImageURL:
+        type: string
+    type: object
+  dtos.ProfileInsertDTO:
+    properties:
+      biography:
+        type: string
+      first_name:
+        minLength: 3
+        type: string
+      last_name:
+        minLength: 3
+        type: string
+      profile_cover_url:
+        type: string
+      profile_image_url:
+        type: string
+    required:
+    - first_name
+    - last_name
+    type: object
+  dtos.ReadingDTO:
+    properties:
+      client_id:
+        type: string
+      id:
+        type: string
+      last_update:
+        type: string
+      notes:
+        type: string
+      reading_name:
+        type: string
+      reading_status:
+        type: string
+      reading_type:
+        type: string
+      records:
+        items:
+          $ref: '#/definitions/dtos.ReadingRecordDTO'
+        type: array
+    type: object
+  dtos.ReadingInsertDTO:
+    properties:
+      document_id:
+        type: string
+      notes:
+        type: string
+      reading_status:
+        enum:
+        - ongoing
+        - completed
+        - paused
+        type: string
+      reading_type:
+        enum:
+        - manga
+        - book
+        - custom_document
+        type: string
+    required:
+    - document_id
+    - reading_status
+    - reading_type
+    type: object
+  dtos.ReadingListInsertDTO:
+    properties:
+      description:
+        type: string
+      name:
+        type: string
+    required:
+    - name
+    type: object
+  dtos.ReadingRecordDTO:
+    properties:
+      id:
+        type: string
+      notes:
+        type: string
+      progress:
+        type: string
+      recordDate:
+        type: string
+    type: object
+  dtos.ReadingRecordInsertDTO:
+    properties:
+      notes:
+        type: string
+      progress:
+        type: string
+      reading_id:
+        type: string
+    required:
+    - notes
+    - progress
+    - reading_id
+    type: object
+  dtos.SignupDTO:
+    properties:
+      email:
+        type: string
+      password:
+        minLength: 8
+        type: string
+      profile_insert_dto:
+        $ref: '#/definitions/dtos.ProfileInsertDTO'
+      username:
+        maxLength: 32
+        minLength: 3
+        type: string
+    required:
+    - email
+    - password
+    - username
+    type: object
+  dtos.UpdateReadingsToListDTO:
+    properties:
+      reading_ids:
+        items:
+          type: string
+        type: array
+      reading_list_id:
+        type: string
+    required:
+    - reading_ids
+    - reading_list_id
+    type: object
+  dtos.UserDTO:
+    properties:
+      email:
+        type: string
+      id:
+        type: string
+      password:
+        type: string
+      profile:
+        $ref: '#/definitions/dtos.ProfileDTO'
+      roles:
+        items:
+          type: string
+        type: array
+      username:
+        type: string
+    type: object
+  dtos.UserInsertDTO:
+    properties:
+      email:
+        type: string
+      password:
+        minLength: 8
+        type: string
+      username:
+        maxLength: 32
+        minLength: 3
+        type: string
+    required:
+    - email
+    - password
+    - username
+    type: object
+  utils.ApiResponse:
+    description: Represents a standardized API response structure.
+    properties:
+      code:
+        description: The HTTP status code
+        type: integer
+      data:
+        description: The data returned by the API
+      msg:
+        description: A message providing additional context
+        type: string
+      success:
+        description: Indicates if the request was successful
+        type: boolean
+      timestamp:
+        description: The time at which the response was generated
+        type: string
+    type: object
+info:
+  contact: {}
+paths:
+  /api/mangas:
+    get:
+      consumes:
+      - application/json
+      description: Retrieve all mangas with sorting and pagination options.
+      parameters:
+      - default: 1
+        description: Page number
+        in: query
+        name: page
+        type: integer
+      - default: 10
+        description: Number of results per page
+        in: query
+        name: limit
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Success
+          schema:
+            items:
+              $ref: '#/definitions/dtos.MangaDTO'
+            type: array
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/utils.ApiResponse'
+      summary: Get All Mangas Sorted and Paginated
+      tags:
+      - Mangas
+    post:
+      consumes:
+      - application/json
+      description: Create a new manga in the system.
+      parameters:
+      - description: Manga Insert DTO
+        in: body
+        name: mangaInsertDTO
+        required: true
+        schema:
+          $ref: '#/definitions/dtos.MangaInsertDTO'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Manga Created
+          schema:
+            $ref: '#/definitions/utils.ApiResponse'
+        "400":
+          description: Invalid Data
+          schema:
+            $ref: '#/definitions/utils.ApiResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/utils.ApiResponse'
+      summary: Create Manga
+      tags:
+      - Mangas
+  /api/mangas/{mangaId}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete a manga by its ID.
+      parameters:
+      - description: Manga ID
+        in: path
+        name: mangaId
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Manga Deleted
+          schema:
+            $ref: '#/definitions/utils.ApiResponse'
+        "400":
+          description: Invalid Manga ID
+          schema:
+            $ref: '#/definitions/utils.ApiResponse'
+        "404":
+          description: Manga not found
+          schema:
+            $ref: '#/definitions/utils.ApiResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/utils.ApiResponse'
+      summary: Delete Manga
+      tags:
+      - Mangas
+    get:
+      consumes:
+      - application/json
+      description: Retrieve a manga by its ID.
+      parameters:
+      - description: Manga ID
+        in: path
+        name: mangaId
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: '#/definitions/dtos.MangaDTO'
+        "400":
+          description: Invalid Manga ID
+          schema:
+            $ref: '#/definitions/utils.ApiResponse'
+        "404":
+          description: Manga not found
+          schema:
+            $ref: '#/definitions/utils.ApiResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/utils.ApiResponse'
+      summary: Get Manga by ID
+      tags:
+      - Mangas
+    put:
+      consumes:
+      - application/json
+      description: Update an existing manga by its ID.
+      parameters:
+      - description: Manga ID
+        in: path
+        name: mangaId
+        required: true
+        type: string
+      - description: Manga Insert DTO
+        in: body
+        name: mangaInsertDTO
+        required: true
+        schema:
+          $ref: '#/definitions/dtos.MangaInsertDTO'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Manga Updated
+          schema:
+            $ref: '#/definitions/utils.ApiResponse'
+        "400":
+          description: Invalid Manga ID
+          schema:
+            $ref: '#/definitions/utils.ApiResponse'
+        "404":
+          description: Manga not found
+          schema:
+            $ref: '#/definitions/utils.ApiResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/utils.ApiResponse'
+      summary: Update Manga
+      tags:
+      - Mangas
+  /api/mangas/author/{author}:
+    get:
+      consumes:
+      - application/json
+      description: Retrieve all mangas written by a specific author.
+      parameters:
+      - description: Author Name
+        in: path
+        name: author
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Success
+          schema:
+            items:
+              $ref: '#/definitions/dtos.MangaDTO'
+            type: array
+        "400":
+          description: Invalid Author Name
+          schema:
+            $ref: '#/definitions/utils.ApiResponse'
+        "404":
+          description: No mangas found for this author
+          schema:
+            $ref: '#/definitions/utils.ApiResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/utils.ApiResponse'
+      summary: Get Mangas by Author
+      tags:
+      - Mangas
+  /api/mangas/demography/{demography}:
+    get:
+      consumes:
+      - application/json
+      description: Retrieve all mangas under a specific demography.
+      parameters:
+      - description: Demography Type
+        in: path
+        name: demography
+        required: true
+        type: string
+      - default: 1
+        description: Page number
+        in: query
+        name: page
+        type: integer
+      - default: 10
+        description: Number of results per page
+        in: query
+        name: limit
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Success
+          schema:
+            items:
+              $ref: '#/definitions/dtos.MangaDTO'
+            type: array
+        "400":
+          description: Invalid Demography
+          schema:
+            $ref: '#/definitions/utils.ApiResponse'
+        "404":
+          description: No mangas found for this demography
+          schema:
+            $ref: '#/definitions/utils.ApiResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/utils.ApiResponse'
+      summary: Get Mangas by Demography
+      tags:
+      - Mangas
+  /api/mangas/genre/{genre}:
+    get:
+      consumes:
+      - application/json
+      description: Retrieve all mangas under a specific genre.
+      parameters:
+      - description: Genre
+        in: path
+        name: genre
+        required: true
+        type: string
+      - default: 1
+        description: Page number
+        in: query
+        name: page
+        type: integer
+      - default: 10
+        description: Number of results per page
+        in: query
+        name: limit
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Success
+          schema:
+            items:
+              $ref: '#/definitions/dtos.MangaDTO'
+            type: array
+        "400":
+          description: Invalid Genre
+          schema:
+            $ref: '#/definitions/utils.ApiResponse'
+        "404":
+          description: No mangas found for this genre
+          schema:
+            $ref: '#/definitions/utils.ApiResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/utils.ApiResponse'
+      summary: Get Mangas by Genre
+      tags:
+      - Mangas
+  /api/mangas/name/{name}:
+    get:
+      consumes:
+      - application/json
+      description: Retrieve all mangas that match a specific name pattern.
+      parameters:
+      - description: Manga Name
+        in: path
+        name: name
+        required: true
+        type: string
+      - default: 1
+        description: Page number
+        in: query
+        name: page
+        type: integer
+      - default: 10
+        description: Number of results per page
+        in: query
+        name: limit
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Success
+          schema:
+            items:
+              $ref: '#/definitions/dtos.MangaDTO'
+            type: array
+        "400":
+          description: Invalid Name
+          schema:
+            $ref: '#/definitions/utils.ApiResponse'
+        "404":
+          description: No mangas found for this name
+          schema:
+            $ref: '#/definitions/utils.ApiResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/utils.ApiResponse'
+      summary: Get Mangas by Name Pattern
+      tags:
+      - Mangas
+  /api/readings:
+    get:
+      consumes:
+      - application/json
+      description: Retrieve a paginated list of readings for the authenticated user.
+      parameters:
+      - description: Sort order (asc or desc)
+        in: query
+        name: sort
+        type: string
+      - default: 1
+        description: Page number
+        in: query
+        name: page
+        type: integer
+      - default: 10
+        description: Number of items per page
+        in: query
+        name: limit
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Success
+          schema:
+            items:
+              $ref: '#/definitions/dtos.ReadingDTO'
+            type: array
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/utils.ApiResponse'
+      summary: Get my readings
+      tags:
+      - Readings
+    post:
+      consumes:
+      - application/json
+      description: Start a new reading for the authenticated user.
+      parameters:
+      - description: Reading data
+        in: body
+        name: reading
+        required: true
+        schema:
+          $ref: '#/definitions/dtos.ReadingInsertDTO'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/utils.ApiResponse'
+        "400":
+          description: Validation error
+          schema:
+            $ref: '#/definitions/utils.ApiResponse'
+        "404":
+          description: Document not found
+          schema:
+            $ref: '#/definitions/utils.ApiResponse'
+        "409":
+          description: Duplicated reading
+          schema:
+            $ref: '#/definitions/utils.ApiResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/utils.ApiResponse'
+      summary: Start a reading
+      tags:
+      - Readings
+  /api/readings/{readingId}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete a reading for the authenticated user.
+      parameters:
+      - description: Reading ID
+        in: path
+        name: readingId
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: Deleted
+          schema:
+            $ref: '#/definitions/utils.ApiResponse'
+        "404":
+          description: Reading not found
+          schema:
+            $ref: '#/definitions/utils.ApiResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/utils.ApiResponse'
+      summary: Delete my reading
+      tags:
+      - Readings
+    put:
+      consumes:
+      - application/json
+      description: Update an existing reading for the authenticated user.
+      parameters:
+      - description: Reading ID
+        in: path
+        name: readingId
+        required: true
+        type: string
+      - description: Updated reading data
+        in: body
+        name: reading
+        required: true
+        schema:
+          $ref: '#/definitions/dtos.ReadingInsertDTO'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Updated
+          schema:
+            $ref: '#/definitions/utils.ApiResponse'
+        "400":
+          description: Validation error
+          schema:
+            $ref: '#/definitions/utils.ApiResponse'
+        "404":
+          description: Reading not found
+          schema:
+            $ref: '#/definitions/utils.ApiResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/utils.ApiResponse'
+      summary: Update my reading
+      tags:
+      - Readings
+  /api/readings/status:
+    get:
+      consumes:
+      - application/json
+      description: Retrieve readings for the authenticated user filtered by status.
+      parameters:
+      - default: ongoing
+        description: Reading status (ongoing, paused, completed)
+        in: query
+        name: status
+        type: string
+      - description: Sort order (asc or desc)
+        in: query
+        name: sort
+        type: string
+      - default: 1
+        description: Page number
+        in: query
+        name: page
+        type: integer
+      - default: 10
+        description: Number of items per page
+        in: query
+        name: limit
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Success
+          schema:
+            items:
+              $ref: '#/definitions/dtos.ReadingDTO'
+            type: array
+        "400":
+          description: Invalid reading status
+          schema:
+            $ref: '#/definitions/utils.ApiResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/utils.ApiResponse'
+      summary: Get my readings by status
+      tags:
+      - Readings
+  /api/readings/type:
+    get:
+      consumes:
+      - application/json
+      description: Retrieve readings for the authenticated user filtered by type.
+      parameters:
+      - default: book
+        description: Reading type (manga, book, custom_document)
+        in: query
+        name: type
+        type: string
+      - description: Sort order (asc or desc)
+        in: query
+        name: sort
+        type: string
+      - default: 1
+        description: Page number
+        in: query
+        name: page
+        type: integer
+      - default: 10
+        description: Number of items per page
+        in: query
+        name: limit
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Success
+          schema:
+            items:
+              $ref: '#/definitions/dtos.ReadingDTO'
+            type: array
+        "400":
+          description: Invalid reading type
+          schema:
+            $ref: '#/definitions/utils.ApiResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/utils.ApiResponse'
+      summary: Get my readings by type
+      tags:
+      - Readings
+  /api/users:
+    post:
+      consumes:
+      - application/json
+      description: Create a new user in the system.
+      parameters:
+      - description: User data
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/dtos.UserInsertDTO'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: User created
+          schema:
+            $ref: '#/definitions/dtos.UserDTO'
+        "400":
+          description: Validation error
+          schema:
+            $ref: '#/definitions/utils.ApiResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/utils.ApiResponse'
+      summary: Create User
+      tags:
+      - Users
+  /api/users/{userId}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete a user from the system by their ID.
+      parameters:
+      - description: User ID
+        in: path
+        name: userId
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: User deleted
+          schema:
+            $ref: '#/definitions/utils.ApiResponse'
+        "404":
+          description: User not found
+          schema:
+            $ref: '#/definitions/utils.ApiResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/utils.ApiResponse'
+      summary: Delete User
+      tags:
+      - Users
+    get:
+      consumes:
+      - application/json
+      description: Retrieve a user by their ID.
+      parameters:
+      - description: User ID
+        in: path
+        name: userId
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: '#/definitions/dtos.UserDTO'
+        "400":
+          description: Invalid User ID
+          schema:
+            $ref: '#/definitions/utils.ApiResponse'
+        "404":
+          description: User not found
+          schema:
+            $ref: '#/definitions/utils.ApiResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/utils.ApiResponse'
+      summary: Get User by ID
+      tags:
+      - Users
+    put:
+      consumes:
+      - application/json
+      description: Update an existing user in the system.
+      parameters:
+      - description: User ID
+        in: path
+        name: userId
+        required: true
+        type: string
+      - description: Updated user data
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/dtos.UserInsertDTO'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: User updated
+          schema:
+            $ref: '#/definitions/dtos.UserDTO'
+        "400":
+          description: Validation error
+          schema:
+            $ref: '#/definitions/utils.ApiResponse'
+        "404":
+          description: User not found
+          schema:
+            $ref: '#/definitions/utils.ApiResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/utils.ApiResponse'
+      summary: Update User
+      tags:
+      - Users
+  /auth/login:
+    post:
+      consumes:
+      - application/json
+      description: Authenticate an existing user
+      parameters:
+      - description: User Login Information
+        in: body
+        name: login
+        required: true
+        schema:
+          $ref: '#/definitions/dtos.LoginDTO'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/utils.ApiResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/utils.ApiResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/utils.ApiResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/utils.ApiResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/utils.ApiResponse'
+      summary: User Login
+      tags:
+      - Auth
+  /auth/signup:
+    post:
+      consumes:
+      - application/json
+      description: Register a new user
+      parameters:
+      - description: User Signup Information
+        in: body
+        name: signup
+        required: true
+        schema:
+          $ref: '#/definitions/dtos.SignupDTO'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/utils.ApiResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/utils.ApiResponse'
+        "409":
+          description: Conflict
+          schema:
+            $ref: '#/definitions/utils.ApiResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/utils.ApiResponse'
+      summary: User Signup
+      tags:
+      - Auth
+  /books:
+    get:
+      description: Get all books sorted and paginated
+      parameters:
+      - default: 1
+        description: Page number
+        in: query
+        name: page
+        type: integer
+      - default: 10
+        description: Number of books per page
+        in: query
+        name: limit
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/dtos.BookDTO'
+            type: array
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/utils.ApiResponse'
+      summary: Get all books with sorting and pagination
+      tags:
+      - Books
+    post:
+      consumes:
+      - application/json
+      description: Create a new book entry
+      parameters:
+      - description: Book Information
+        in: body
+        name: book
+        required: true
+        schema:
+          $ref: '#/definitions/dtos.BookInsertDTO'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/utils.ApiResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/utils.ApiResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/utils.ApiResponse'
+      summary: Create a new book
+      tags:
+      - Books
+  /books/{id}:
+    delete:
+      description: Delete a book entry by ID
+      parameters:
+      - description: Book ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: No Content
+          schema:
+            $ref: '#/definitions/utils.ApiResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/utils.ApiResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/utils.ApiResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/utils.ApiResponse'
+      summary: Delete a book
+      tags:
+      - Books
+    get:
+      description: Get book details by ID
+      parameters:
+      - description: Book ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dtos.BookDTO'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/utils.ApiResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/utils.ApiResponse'
+      summary: Get a book by ID
+      tags:
+      - Books
+    put:
+      consumes:
+      - application/json
+      description: Update a book entry by ID
+      parameters:
+      - description: Book ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Book Information
+        in: body
+        name: book
+        required: true
+        schema:
+          $ref: '#/definitions/dtos.BookInsertDTO'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/utils.ApiResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/utils.ApiResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/utils.ApiResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/utils.ApiResponse'
+      summary: Update an existing book
+      tags:
+      - Books
+  /books/author/{author}:
+    get:
+      description: Get books written by a specific author
+      parameters:
+      - description: Author Name
+        in: path
+        name: author
+        required: true
+        type: string
+      - default: 1
+        description: Page number
+        in: query
+        name: page
+        type: integer
+      - default: 10
+        description: Number of books per page
+        in: query
+        name: limit
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/dtos.BookDTO'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/utils.ApiResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/utils.ApiResponse'
+      summary: Get books by author
+      tags:
+      - Books
+  /books/genre/{genre}:
+    get:
+      description: Get books of a specific genre
+      parameters:
+      - description: Genre
+        in: path
+        name: genre
+        required: true
+        type: string
+      - default: 1
+        description: Page number
+        in: query
+        name: page
+        type: integer
+      - default: 10
+        description: Number of books per page
+        in: query
+        name: limit
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/dtos.BookDTO'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/utils.ApiResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/utils.ApiResponse'
+      summary: Get books by genre
+      tags:
+      - Books
+  /books/isbn/{isbn}:
+    get:
+      description: Get book details by ISBN
+      parameters:
+      - description: Book ISBN
+        in: path
+        name: isbn
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dtos.BookDTO'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/utils.ApiResponse'
+      summary: Get a book by ISBN
+      tags:
+      - Books
+  /books/name/{name}:
+    get:
+      description: Get books matching a specific name
+      parameters:
+      - description: Book Name
+        in: path
+        name: name
+        required: true
+        type: string
+      - default: 1
+        description: Page number
+        in: query
+        name: page
+        type: integer
+      - default: 10
+        description: Number of books per page
+        in: query
+        name: limit
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/dtos.BookDTO'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/utils.ApiResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/utils.ApiResponse'
+      summary: Get books by name pattern
+      tags:
+      - Books
+  /documents:
+    get:
+      description: Retrieve all custom documents for the user
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/dtos.CustomDocumentDTO'
+            type: array
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/utils.ApiResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/utils.ApiResponse'
+      summary: Get all custom documents for the authenticated user
+      tags:
+      - documents
+    post:
+      consumes:
+      - application/json
+      description: Create a custom document for the authenticated user
+      parameters:
+      - description: Custom Document Data
+        in: body
+        name: document
+        required: true
+        schema:
+          $ref: '#/definitions/dtos.CustomDocumentInsertDTO'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/utils.ApiResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/utils.ApiResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/utils.ApiResponse'
+      summary: Create a new custom document
+      tags:
+      - documents
+  /documents/{id}:
+    delete:
+      description: Delete a custom document by ID for the authenticated user
+      parameters:
+      - description: Document ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/utils.ApiResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/utils.ApiResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/utils.ApiResponse'
+      summary: Delete a custom document
+      tags:
+      - documents
+    get:
+      description: Retrieve a custom document by its ID for the authenticated user
+      parameters:
+      - description: Document ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dtos.CustomDocumentDTO'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/utils.ApiResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/utils.ApiResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/utils.ApiResponse'
+      summary: Get a document by ID
+      tags:
+      - documents
+    put:
+      consumes:
+      - application/json
+      description: Update a custom document by ID for the authenticated user
+      parameters:
+      - description: Document ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Updated Custom Document Data
+        in: body
+        name: document
+        required: true
+        schema:
+          $ref: '#/definitions/dtos.CustomDocumentInsertDTO'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/utils.ApiResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/utils.ApiResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/utils.ApiResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/utils.ApiResponse'
+      summary: Update an existing custom document
+      tags:
+      - documents
+  /my-reading-lists:
+    delete:
+      consumes:
+      - application/json
+      description: Remove readings from the authenticated user's specified reading
+        list
+      parameters:
+      - description: Readings to be removed
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/dtos.UpdateReadingsToListDTO'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Successful removal
+          schema:
+            $ref: '#/definitions/utils.ApiResponse'
+        "400":
+          description: Invalid request body
+          schema:
+            $ref: '#/definitions/utils.ApiResponse'
+        "404":
+          description: Reading List not found
+          schema:
+            $ref: '#/definitions/utils.ApiResponse'
+      summary: Remove readings from a user's reading list
+      tags:
+      - ReadingList
+    get:
+      consumes:
+      - application/json
+      description: Retrieve a reading list associated with the authenticated user
+        by list ID
+      parameters:
+      - description: Reading List ID
+        in: query
+        name: listId
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Successful retrieval
+          schema:
+            $ref: '#/definitions/utils.ApiResponse'
+        "400":
+          description: Invalid list ID
+          schema:
+            $ref: '#/definitions/utils.ApiResponse'
+        "404":
+          description: Reading List not found
+          schema:
+            $ref: '#/definitions/utils.ApiResponse'
+      summary: Get a specific reading list by ID for the authenticated user
+      tags:
+      - ReadingList
+    post:
+      consumes:
+      - application/json
+      description: Create a new reading list associated with the authenticated user
+      parameters:
+      - description: Reading List details
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/dtos.ReadingListInsertDTO'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Successful creation
+          schema:
+            $ref: '#/definitions/utils.ApiResponse'
+        "400":
+          description: Invalid request body
+          schema:
+            $ref: '#/definitions/utils.ApiResponse'
+        "404":
+          description: User not found
+          schema:
+            $ref: '#/definitions/utils.ApiResponse'
+      summary: Create a new reading list for the authenticated user
+      tags:
+      - ReadingList
+  /my-reading-lists/{readingId}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete a specific reading list associated with the authenticated
+        user
+      parameters:
+      - description: Reading List ID
+        in: path
+        name: readingId
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Successful deletion
+          schema:
+            $ref: '#/definitions/utils.ApiResponse'
+        "404":
+          description: Reading List not found
+          schema:
+            $ref: '#/definitions/utils.ApiResponse'
+      summary: Delete a reading list for the authenticated user
+      tags:
+      - ReadingList
+    put:
+      consumes:
+      - application/json
+      description: Update the details of a specific reading list associated with the
+        authenticated user
+      parameters:
+      - description: Reading List ID
+        in: path
+        name: readingId
+        required: true
+        type: string
+      - description: Updated Reading List details
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/dtos.ReadingListInsertDTO'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Successful update
+          schema:
+            $ref: '#/definitions/utils.ApiResponse'
+        "400":
+          description: Invalid request body
+          schema:
+            $ref: '#/definitions/utils.ApiResponse'
+        "404":
+          description: Reading List not found
+          schema:
+            $ref: '#/definitions/utils.ApiResponse'
+      summary: Update an existing reading list for the authenticated user
+      tags:
+      - ReadingList
+  /path-to-resource:
+    delete:
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/utils.ApiResponse'
+    get:
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/utils.ApiResponse'
+    post:
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/utils.ApiResponse'
+    put:
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/utils.ApiResponse'
+  /reading-lists:
+    get:
+      consumes:
+      - application/json
+      description: Retrieve all reading lists associated with a specific user ID
+      parameters:
+      - description: User ID
+        in: query
+        name: userId
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Successful retrieval
+          schema:
+            $ref: '#/definitions/utils.ApiResponse'
+        "400":
+          description: Invalid user ID
+          schema:
+            $ref: '#/definitions/utils.ApiResponse'
+        "404":
+          description: User not found
+          schema:
+            $ref: '#/definitions/utils.ApiResponse'
+      summary: Get reading lists by user ID
+      tags:
+      - ReadingList
+    post:
+      consumes:
+      - application/json
+      description: Create a new reading list for a specific user
+      parameters:
+      - description: User ID
+        in: query
+        name: userId
+        required: true
+        type: string
+      - description: Reading List details
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/dtos.ReadingListInsertDTO'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Successful creation
+          schema:
+            $ref: '#/definitions/utils.ApiResponse'
+        "400":
+          description: Invalid user ID or request body
+          schema:
+            $ref: '#/definitions/utils.ApiResponse'
+        "404":
+          description: User not found
+          schema:
+            $ref: '#/definitions/utils.ApiResponse'
+      summary: Create a new reading list
+      tags:
+      - ReadingList
+  /reading-lists/{readingId}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete a specific reading list associated with a user
+      parameters:
+      - description: User ID
+        in: query
+        name: userId
+        required: true
+        type: string
+      - description: Reading List ID
+        in: path
+        name: readingId
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Successful deletion
+          schema:
+            $ref: '#/definitions/utils.ApiResponse'
+        "400":
+          description: Invalid user ID or reading list ID
+          schema:
+            $ref: '#/definitions/utils.ApiResponse'
+        "404":
+          description: Reading List not found
+          schema:
+            $ref: '#/definitions/utils.ApiResponse'
+      summary: Delete a reading list
+      tags:
+      - ReadingList
+    put:
+      consumes:
+      - application/json
+      description: Update the details of a specific reading list
+      parameters:
+      - description: User ID
+        in: query
+        name: userId
+        required: true
+        type: string
+      - description: Reading List ID
+        in: path
+        name: readingId
+        required: true
+        type: string
+      - description: Updated Reading List details
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/dtos.ReadingListInsertDTO'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Successful update
+          schema:
+            $ref: '#/definitions/utils.ApiResponse'
+        "400":
+          description: Invalid user ID, reading list ID, or request body
+          schema:
+            $ref: '#/definitions/utils.ApiResponse'
+        "404":
+          description: Reading List not found
+          schema:
+            $ref: '#/definitions/utils.ApiResponse'
+      summary: Update an existing reading list
+      tags:
+      - ReadingList
+  /reading-lists/{userId}:
+    delete:
+      consumes:
+      - application/json
+      description: Remove readings from the specified user's reading list
+      parameters:
+      - description: User ID
+        in: path
+        name: userId
+        required: true
+        type: string
+      - description: Readings to be removed
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/dtos.UpdateReadingsToListDTO'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Successful removal
+          schema:
+            $ref: '#/definitions/utils.ApiResponse'
+        "400":
+          description: Invalid user ID or request body
+          schema:
+            $ref: '#/definitions/utils.ApiResponse'
+        "404":
+          description: Reading List not found
+          schema:
+            $ref: '#/definitions/utils.ApiResponse'
+      summary: Remove readings from a user's reading list
+      tags:
+      - ReadingList
+    post:
+      consumes:
+      - application/json
+      description: Add readings to the specified user's reading list
+      parameters:
+      - description: User ID
+        in: path
+        name: userId
+        required: true
+        type: string
+      - description: Readings to be added
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/dtos.UpdateReadingsToListDTO'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Successful addition
+          schema:
+            $ref: '#/definitions/utils.ApiResponse'
+        "400":
+          description: Invalid user ID or request body
+          schema:
+            $ref: '#/definitions/utils.ApiResponse'
+        "404":
+          description: Reading List not found
+          schema:
+            $ref: '#/definitions/utils.ApiResponse'
+      summary: Add readings to a user's reading list
+      tags:
+      - ReadingList
+  /readings:
+    post:
+      consumes:
+      - application/json
+      description: Create a new reading
+      parameters:
+      - description: User ID
+        in: query
+        name: userId
+        required: true
+        type: string
+      - description: Reading data
+        in: body
+        name: reading
+        required: true
+        schema:
+          $ref: '#/definitions/dtos.ReadingInsertDTO'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Reading created
+          schema:
+            $ref: '#/definitions/utils.ApiResponse'
+        "400":
+          description: Invalid input
+          schema:
+            $ref: '#/definitions/utils.ApiResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/utils.ApiResponse'
+      summary: Create Reading
+      tags:
+      - Readings
+  /readings/{id}:
+    delete:
+      description: Delete a reading by its ID
+      parameters:
+      - description: Reading ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: User ID
+        in: query
+        name: userId
+        required: true
+        type: string
+      responses:
+        "204":
+          description: Reading deleted
+          schema:
+            $ref: '#/definitions/utils.ApiResponse'
+        "400":
+          description: Invalid ID
+          schema:
+            $ref: '#/definitions/utils.ApiResponse'
+        "404":
+          description: Reading not found
+          schema:
+            $ref: '#/definitions/utils.ApiResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/utils.ApiResponse'
+      summary: Delete Reading
+      tags:
+      - Readings
+    get:
+      description: Get a reading by its ID
+      parameters:
+      - description: Reading ID
+        in: path
+        name: id
+        required: true
+        type: string
+      responses:
+        "200":
+          description: Successful response
+          schema:
+            $ref: '#/definitions/dtos.ReadingDTO'
+        "400":
+          description: Invalid ID
+          schema:
+            $ref: '#/definitions/utils.ApiResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/utils.ApiResponse'
+      summary: Get Reading by ID
+      tags:
+      - Readings
+    put:
+      consumes:
+      - application/json
+      description: Update a reading by its ID
+      parameters:
+      - description: Reading ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: User ID
+        in: query
+        name: userId
+        required: true
+        type: string
+      - description: Reading data
+        in: body
+        name: reading
+        required: true
+        schema:
+          $ref: '#/definitions/dtos.ReadingInsertDTO'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Reading updated
+          schema:
+            $ref: '#/definitions/utils.ApiResponse'
+        "400":
+          description: Invalid input
+          schema:
+            $ref: '#/definitions/utils.ApiResponse'
+        "404":
+          description: Reading not found
+          schema:
+            $ref: '#/definitions/utils.ApiResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/utils.ApiResponse'
+      summary: Update Reading
+      tags:
+      - Readings
+  /records:
+    post:
+      consumes:
+      - application/json
+      description: Create a new record associated with a specific reading
+      parameters:
+      - description: Reading Record details
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/dtos.ReadingRecordInsertDTO'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Reading Record created
+          schema:
+            $ref: '#/definitions/utils.ApiResponse'
+        "400":
+          description: Invalid request body
+          schema:
+            $ref: '#/definitions/utils.ApiResponse'
+        "404":
+          description: Reading not found
+          schema:
+            $ref: '#/definitions/utils.ApiResponse'
+      summary: Add a new record for a reading
+      tags:
+      - ReadingRecord
+  /records/{readingId}:
+    get:
+      consumes:
+      - application/json
+      description: Retrieve all records from a user's reading by reading ID
+      parameters:
+      - description: Reading ID
+        in: path
+        name: readingId
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Found reading records
+          schema:
+            $ref: '#/definitions/utils.ApiResponse'
+        "400":
+          description: Invalid request parameters
+          schema:
+            $ref: '#/definitions/utils.ApiResponse'
+        "404":
+          description: No records found
+          schema:
+            $ref: '#/definitions/utils.ApiResponse'
+      summary: Get records for a specific reading
+      tags:
+      - ReadingRecord
+    put:
+      consumes:
+      - application/json
+      description: Update the details of a specific record for a reading
+      parameters:
+      - description: Reading ID
+        in: path
+        name: readingId
+        required: true
+        type: string
+      - description: Updated Reading Record details
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/dtos.ReadingRecordInsertDTO'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Reading Record updated
+          schema:
+            $ref: '#/definitions/utils.ApiResponse'
+        "400":
+          description: Invalid request body
+          schema:
+            $ref: '#/definitions/utils.ApiResponse'
+        "404":
+          description: Reading not found
+          schema:
+            $ref: '#/definitions/utils.ApiResponse'
+      summary: Update an existing record for a reading
+      tags:
+      - ReadingRecord
+  /records/{recordId}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete a specific reading record from a user's readings
+      parameters:
+      - description: Reading ID
+        in: query
+        name: readingId
+        required: true
+        type: string
+      - description: Record ID
+        in: path
+        name: recordId
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Reading Record deleted
+          schema:
+            $ref: '#/definitions/utils.ApiResponse'
+        "400":
+          description: Invalid request parameters
+          schema:
+            $ref: '#/definitions/utils.ApiResponse'
+        "404":
+          description: Reading not found
+          schema:
+            $ref: '#/definitions/utils.ApiResponse'
+      summary: Remove a record from my readings
+      tags:
+      - ReadingRecord
+    put:
+      consumes:
+      - application/json
+      description: Update the details of a reading record
+      parameters:
+      - description: Record ID
+        in: path
+        name: recordId
+        required: true
+        type: string
+      - description: Updated Reading Record details
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/dtos.ReadingRecordInsertDTO'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Reading Record updated
+          schema:
+            $ref: '#/definitions/utils.ApiResponse'
+        "400":
+          description: Invalid request body
+          schema:
+            $ref: '#/definitions/utils.ApiResponse'
+        "404":
+          description: Reading not found
+          schema:
+            $ref: '#/definitions/utils.ApiResponse'
+      summary: Update an existing reading record
+      tags:
+      - ReadingRecord
+swagger: "2.0"
