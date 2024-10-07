@@ -11,12 +11,14 @@ import (
 	"github.com/go-playground/validator/v10"
 )
 
+// BookController handles book-related operations
 type BookController struct {
 	bookService services.BookService
 	apiResponse utils.ApiResponse
 	validator   *validator.Validate
 }
 
+// NewBookController creates a new instance of BookController
 func NewBookController(bookService services.BookService) *BookController {
 	return &BookController{
 		bookService: bookService,
@@ -24,6 +26,16 @@ func NewBookController(bookService services.BookService) *BookController {
 	}
 }
 
+// GetBookById retrieves a book by its ID
+// @Summary Get a book by ID
+// @Description Get book details by ID
+// @Tags Books
+// @Produce json
+// @Param id path string true "Book ID"
+// @Success 200 {object} dtos.BookDTO
+// @Failure 400 {object} utils.ApiResponse
+// @Failure 404 {object} utils.ApiResponse
+// @Router /books/{id} [get]
 func (c BookController) GetBookById() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		bookId, err := utils.GetObjectIdFromUrlParam(ctx)
@@ -47,6 +59,15 @@ func (c BookController) GetBookById() gin.HandlerFunc {
 	}
 }
 
+// GetBookByISBN retrieves a book by its ISBN
+// @Summary Get a book by ISBN
+// @Description Get book details by ISBN
+// @Tags Books
+// @Produce json
+// @Param isbn path string true "Book ISBN"
+// @Success 200 {object} dtos.BookDTO
+// @Failure 404 {object} utils.ApiResponse
+// @Router /books/isbn/{isbn} [get]
 func (c BookController) GetBookByISBN() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		bookISBN := ctx.Param("isbn")
@@ -65,6 +86,18 @@ func (c BookController) GetBookByISBN() gin.HandlerFunc {
 	}
 }
 
+// GetBooksByAuthor retrieves books by the author's name
+// @Summary Get books by author
+// @Description Get books written by a specific author
+// @Tags Books
+// @Produce json
+// @Param author path string true "Author Name"
+// @Param page query int false "Page number" default(1)
+// @Param limit query int false "Number of books per page" default(10)
+// @Success 200 {object} []dtos.BookDTO
+// @Failure 400 {object} utils.ApiResponse
+// @Failure 404 {object} utils.ApiResponse
+// @Router /books/author/{author} [get]
 func (c BookController) GetBooksByAuthor() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		page, limit := utils.GetPaginationValuesFromRequest(ctx)
@@ -90,6 +123,16 @@ func (c BookController) GetBooksByAuthor() gin.HandlerFunc {
 	}
 }
 
+// GetAllBooksSortedPaginated retrieves all books with sorting and pagination
+// @Summary Get all books with sorting and pagination
+// @Description Get all books sorted and paginated
+// @Tags Books
+// @Produce json
+// @Param page query int false "Page number" default(1)
+// @Param limit query int false "Number of books per page" default(10)
+// @Success 200 {object} []dtos.BookDTO
+// @Failure 500 {object} utils.ApiResponse
+// @Router /books [get]
 func (c BookController) GetAllBooksSortedPaginated() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		page, limit := utils.GetPaginationValuesFromRequest(ctx)
@@ -104,6 +147,18 @@ func (c BookController) GetAllBooksSortedPaginated() gin.HandlerFunc {
 	}
 }
 
+// GetBooksByGenre retrieves books by genre
+// @Summary Get books by genre
+// @Description Get books of a specific genre
+// @Tags Books
+// @Produce json
+// @Param genre path string true "Genre"
+// @Param page query int false "Page number" default(1)
+// @Param limit query int false "Number of books per page" default(10)
+// @Success 200 {object} []dtos.BookDTO
+// @Failure 400 {object} utils.ApiResponse
+// @Failure 404 {object} utils.ApiResponse
+// @Router /books/genre/{genre} [get]
 func (c BookController) GetBooksByGenre() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		page, limit := utils.GetPaginationValuesFromRequest(ctx)
@@ -129,6 +184,18 @@ func (c BookController) GetBooksByGenre() gin.HandlerFunc {
 	}
 }
 
+// GetBooksByMatchingName retrieves books matching a given name
+// @Summary Get books by name pattern
+// @Description Get books matching a specific name
+// @Tags Books
+// @Produce json
+// @Param name path string true "Book Name"
+// @Param page query int false "Page number" default(1)
+// @Param limit query int false "Number of books per page" default(10)
+// @Success 200 {object} []dtos.BookDTO
+// @Failure 400 {object} utils.ApiResponse
+// @Failure 404 {object} utils.ApiResponse
+// @Router /books/name/{name} [get]
 func (c BookController) GetBooksByMatchingName() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		page, limit := utils.GetPaginationValuesFromRequest(ctx)
@@ -154,6 +221,17 @@ func (c BookController) GetBooksByMatchingName() gin.HandlerFunc {
 	}
 }
 
+// CreateBook creates a new book
+// @Summary Create a new book
+// @Description Create a new book entry
+// @Tags Books
+// @Accept json
+// @Produce json
+// @Param book body dtos.BookInsertDTO true "Book Information"
+// @Success 201 {object} utils.ApiResponse
+// @Failure 400 {object} utils.ApiResponse
+// @Failure 500 {object} utils.ApiResponse
+// @Router /books [post]
 func (c BookController) CreateBook() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		var bookInsertDTO dtos.BookInsertDTO
@@ -172,6 +250,19 @@ func (c BookController) CreateBook() gin.HandlerFunc {
 	}
 }
 
+// UpdateBook updates an existing book
+// @Summary Update an existing book
+// @Description Update a book entry by ID
+// @Tags Books
+// @Accept json
+// @Produce json
+// @Param id path string true "Book ID"
+// @Param book body dtos.BookInsertDTO true "Book Information"
+// @Success 200 {object} utils.ApiResponse
+// @Failure 400 {object} utils.ApiResponse
+// @Failure 404 {object} utils.ApiResponse
+// @Failure 500 {object} utils.ApiResponse
+// @Router /books/{id} [put]
 func (c BookController) UpdateBook() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		bookId, err := utils.GetObjectIdFromUrlParam(ctx)
@@ -201,6 +292,17 @@ func (c BookController) UpdateBook() gin.HandlerFunc {
 	}
 }
 
+// DeleteBook deletes a book by its ID
+// @Summary Delete a book
+// @Description Delete a book entry by ID
+// @Tags Books
+// @Produce json
+// @Param id path string true "Book ID"
+// @Success 204 {object} utils.ApiResponse
+// @Failure 400 {object} utils.ApiResponse
+// @Failure 404 {object} utils.ApiResponse
+// @Failure 500 {object} utils.ApiResponse
+// @Router /books/{id} [delete]
 func (c BookController) DeleteBook() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		bookId, err := utils.GetObjectIdFromUrlParam(ctx)

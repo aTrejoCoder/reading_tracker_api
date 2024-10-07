@@ -24,6 +24,18 @@ func NewAuthController(authServices services.AuthServices) *AuthController {
 	}
 }
 
+// Signup handles user registration
+// @Summary User Signup
+// @Description Register a new user
+// @Tags Auth
+// @Accept json
+// @Produce json
+// @Param signup body dtos.SignupDTO true "User Signup Information"
+// @Success 200 {object} utils.ApiResponse
+// @Failure 400 {object} utils.ApiResponse
+// @Failure 409 {object} utils.ApiResponse
+// @Failure 500 {object} utils.ApiResponse
+// @Router /auth/signup [post]
 func (c AuthController) Signup() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		var signUpDTO dtos.SignupDTO
@@ -47,10 +59,23 @@ func (c AuthController) Signup() gin.HandlerFunc {
 			return
 		}
 
-		c.apiResponse.OK(ctx, jwtToken, "Signup succesfull")
+		c.apiResponse.OK(ctx, jwtToken, "Signup successful")
 	}
 }
 
+// Login handles user authentication
+// @Summary User Login
+// @Description Authenticate an existing user
+// @Tags Auth
+// @Accept json
+// @Produce json
+// @Param login body dtos.LoginDTO true "User Login Information"
+// @Success 200 {object} utils.ApiResponse
+// @Failure 400 {object} utils.ApiResponse
+// @Failure 404 {object} utils.ApiResponse
+// @Failure 401 {object} utils.ApiResponse
+// @Failure 500 {object} utils.ApiResponse
+// @Router /auth/login [post]
 func (c AuthController) Login() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		var loginDTO dtos.LoginDTO
@@ -77,7 +102,7 @@ func (c AuthController) Login() gin.HandlerFunc {
 
 		jwtToken, err := c.authServices.ProccesLogin(*userDTO)
 		if err != nil {
-			c.apiResponse.ServerError(ctx, "can't proccess login")
+			c.apiResponse.ServerError(ctx, "can't process login")
 			return
 		}
 

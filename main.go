@@ -3,12 +3,26 @@ package main
 import (
 	"github.com/aTrejoCoder/reading_tracker_api/controllers"
 	"github.com/aTrejoCoder/reading_tracker_api/database"
+	_ "github.com/aTrejoCoder/reading_tracker_api/docs"
 	"github.com/aTrejoCoder/reading_tracker_api/models"
 	"github.com/aTrejoCoder/reading_tracker_api/repository"
 	"github.com/aTrejoCoder/reading_tracker_api/routes"
 	"github.com/aTrejoCoder/reading_tracker_api/services"
 	"github.com/gin-gonic/gin"
+	swaggerFiles "github.com/swaggo/files"
+	ginSwagger "github.com/swaggo/gin-swagger"
 )
+
+// @title Reading Tracker API
+// @version 1.0
+// @description API for managing books, manga, readings, and custom documents.
+
+// @contact.name API Support
+// @contact.url http://www.swagger.io/support
+// @contact.email support@swagger.io
+
+// @host localhost:8080
+// @BasePath /
 
 func main() {
 	// Server
@@ -16,6 +30,9 @@ func main() {
 	r.GET("/home", func(ctx *gin.Context) {
 		ctx.JSON(200, gin.H{"home": "reading_tracker_api"})
 	})
+
+	// Swagger route
+	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
 	//Database
 	database.DbConn()

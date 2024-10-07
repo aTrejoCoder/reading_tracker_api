@@ -11,12 +11,14 @@ import (
 	"github.com/go-playground/validator/v10"
 )
 
+// UserController handles user-related operations.
 type UserController struct {
 	userService services.UserService
 	apiResponse utils.ApiResponse
 	validator   *validator.Validate
 }
 
+// NewUserController creates a new UserController.
 func NewUserController(userService services.UserService) *UserController {
 	return &UserController{
 		userService: userService,
@@ -24,6 +26,18 @@ func NewUserController(userService services.UserService) *UserController {
 	}
 }
 
+// GetUserById retrieves a user by ID.
+// @Summary Get User by ID
+// @Description Retrieve a user by their ID.
+// @Tags Users
+// @Accept json
+// @Produce json
+// @Param userId path string true "User ID"
+// @Success 200 {object} dtos.UserDTO "Success"
+// @Failure 400 {object} utils.ApiResponse "Invalid User ID"
+// @Failure 404 {object} utils.ApiResponse "User not found"
+// @Failure 500 {object} utils.ApiResponse "Internal Server Error"
+// @Router /api/users/{userId} [get]
 func (c UserController) GetUserById() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		userId, err := utils.GetObjectIdFromUrlParam(ctx)
@@ -47,6 +61,17 @@ func (c UserController) GetUserById() gin.HandlerFunc {
 	}
 }
 
+// CreateUser creates a new user.
+// @Summary Create User
+// @Description Create a new user in the system.
+// @Tags Users
+// @Accept json
+// @Produce json
+// @Param user body dtos.UserInsertDTO true "User data"
+// @Success 201 {object} dtos.UserDTO "User created"
+// @Failure 400 {object} utils.ApiResponse "Validation error"
+// @Failure 500 {object} utils.ApiResponse "Internal Server Error"
+// @Router /api/users [post]
 func (c UserController) CreateUser() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		var userInsertDTO dtos.UserInsertDTO
@@ -71,6 +96,19 @@ func (c UserController) CreateUser() gin.HandlerFunc {
 	}
 }
 
+// UpdateUser updates an existing user.
+// @Summary Update User
+// @Description Update an existing user in the system.
+// @Tags Users
+// @Accept json
+// @Produce json
+// @Param userId path string true "User ID"
+// @Param user body dtos.UserInsertDTO true "Updated user data"
+// @Success 200 {object} dtos.UserDTO "User updated"
+// @Failure 400 {object} utils.ApiResponse "Validation error"
+// @Failure 404 {object} utils.ApiResponse "User not found"
+// @Failure 500 {object} utils.ApiResponse "Internal Server Error"
+// @Router /api/users/{userId} [put]
 func (c UserController) UpdateUser() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		userId, err := utils.GetObjectIdFromUrlParam(ctx)
@@ -106,6 +144,17 @@ func (c UserController) UpdateUser() gin.HandlerFunc {
 	}
 }
 
+// DeleteUser deletes a user by ID.
+// @Summary Delete User
+// @Description Delete a user from the system by their ID.
+// @Tags Users
+// @Accept json
+// @Produce json
+// @Param userId path string true "User ID"
+// @Success 204 {object} utils.ApiResponse "User deleted"
+// @Failure 404 {object} utils.ApiResponse "User not found"
+// @Failure 500 {object} utils.ApiResponse "Internal Server Error"
+// @Router /api/users/{userId} [delete]
 func (c UserController) DeleteUser() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		userId, err := utils.GetObjectIdFromUrlParam(ctx)

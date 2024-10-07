@@ -11,12 +11,14 @@ import (
 	"github.com/go-playground/validator/v10"
 )
 
+// MangaController handles manga-related operations.
 type MangaController struct {
 	mangaService services.MangaService
 	apiResponse  utils.ApiResponse
 	validator    *validator.Validate
 }
 
+// NewMangaController creates a new MangaController.
 func NewMangaController(mangaService services.MangaService) *MangaController {
 	return &MangaController{
 		mangaService: mangaService,
@@ -24,6 +26,18 @@ func NewMangaController(mangaService services.MangaService) *MangaController {
 	}
 }
 
+// GetMangaById retrieves a manga by ID.
+// @Summary Get Manga by ID
+// @Description Retrieve a manga by its ID.
+// @Tags Mangas
+// @Accept json
+// @Produce json
+// @Param mangaId path string true "Manga ID"
+// @Success 200 {object} dtos.MangaDTO "Success"
+// @Failure 400 {object} utils.ApiResponse "Invalid Manga ID"
+// @Failure 404 {object} utils.ApiResponse "Manga not found"
+// @Failure 500 {object} utils.ApiResponse "Internal Server Error"
+// @Router /api/mangas/{mangaId} [get]
 func (c MangaController) GetMangaById() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		mangaId, err := utils.GetObjectIdFromUrlParam(ctx)
@@ -47,6 +61,18 @@ func (c MangaController) GetMangaById() gin.HandlerFunc {
 	}
 }
 
+// GetMangaByAuthor retrieves mangas by a specific author.
+// @Summary Get Mangas by Author
+// @Description Retrieve all mangas written by a specific author.
+// @Tags Mangas
+// @Accept json
+// @Produce json
+// @Param author path string true "Author Name"
+// @Success 200 {array} dtos.MangaDTO "Success"
+// @Failure 400 {object} utils.ApiResponse "Invalid Author Name"
+// @Failure 404 {object} utils.ApiResponse "No mangas found for this author"
+// @Failure 500 {object} utils.ApiResponse "Internal Server Error"
+// @Router /api/mangas/author/{author} [get]
 func (c MangaController) GetMangaByAuthor() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		author := ctx.Param("author")
@@ -70,6 +96,20 @@ func (c MangaController) GetMangaByAuthor() gin.HandlerFunc {
 	}
 }
 
+// GetMangaByDemography retrieves mangas by demography.
+// @Summary Get Mangas by Demography
+// @Description Retrieve all mangas under a specific demography.
+// @Tags Mangas
+// @Accept json
+// @Produce json
+// @Param demography path string true "Demography Type"
+// @Param page query int false "Page number" default(1)
+// @Param limit query int false "Number of results per page" default(10)
+// @Success 200 {array} dtos.MangaDTO "Success"
+// @Failure 400 {object} utils.ApiResponse "Invalid Demography"
+// @Failure 404 {object} utils.ApiResponse "No mangas found for this demography"
+// @Failure 500 {object} utils.ApiResponse "Internal Server Error"
+// @Router /api/mangas/demography/{demography} [get]
 func (c MangaController) GetMangaByDemography() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		page, limit := utils.GetPaginationValuesFromRequest(ctx)
@@ -95,6 +135,17 @@ func (c MangaController) GetMangaByDemography() gin.HandlerFunc {
 	}
 }
 
+// GetAllMangasSortedPaginated retrieves all mangas with sorting and pagination.
+// @Summary Get All Mangas Sorted and Paginated
+// @Description Retrieve all mangas with sorting and pagination options.
+// @Tags Mangas
+// @Accept json
+// @Produce json
+// @Param page query int false "Page number" default(1)
+// @Param limit query int false "Number of results per page" default(10)
+// @Success 200 {array} dtos.MangaDTO "Success"
+// @Failure 500 {object} utils.ApiResponse "Internal Server Error"
+// @Router /api/mangas [get]
 func (c MangaController) GetAllMangasSortedPaginated() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		page, limit := utils.GetPaginationValuesFromRequest(ctx)
@@ -109,6 +160,20 @@ func (c MangaController) GetAllMangasSortedPaginated() gin.HandlerFunc {
 	}
 }
 
+// GetMangaByGenre retrieves mangas by genre.
+// @Summary Get Mangas by Genre
+// @Description Retrieve all mangas under a specific genre.
+// @Tags Mangas
+// @Accept json
+// @Produce json
+// @Param genre path string true "Genre"
+// @Param page query int false "Page number" default(1)
+// @Param limit query int false "Number of results per page" default(10)
+// @Success 200 {array} dtos.MangaDTO "Success"
+// @Failure 400 {object} utils.ApiResponse "Invalid Genre"
+// @Failure 404 {object} utils.ApiResponse "No mangas found for this genre"
+// @Failure 500 {object} utils.ApiResponse "Internal Server Error"
+// @Router /api/mangas/genre/{genre} [get]
 func (c MangaController) GetMangaByGenre() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		page, limit := utils.GetPaginationValuesFromRequest(ctx)
@@ -134,6 +199,20 @@ func (c MangaController) GetMangaByGenre() gin.HandlerFunc {
 	}
 }
 
+// GetMangaByMatchingName retrieves mangas by name pattern.
+// @Summary Get Mangas by Name Pattern
+// @Description Retrieve all mangas that match a specific name pattern.
+// @Tags Mangas
+// @Accept json
+// @Produce json
+// @Param name path string true "Manga Name"
+// @Param page query int false "Page number" default(1)
+// @Param limit query int false "Number of results per page" default(10)
+// @Success 200 {array} dtos.MangaDTO "Success"
+// @Failure 400 {object} utils.ApiResponse "Invalid Name"
+// @Failure 404 {object} utils.ApiResponse "No mangas found for this name"
+// @Failure 500 {object} utils.ApiResponse "Internal Server Error"
+// @Router /api/mangas/name/{name} [get]
 func (c MangaController) GetMangaByMatchingName() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		page, limit := utils.GetPaginationValuesFromRequest(ctx)
@@ -159,6 +238,17 @@ func (c MangaController) GetMangaByMatchingName() gin.HandlerFunc {
 	}
 }
 
+// CreateManga creates a new manga.
+// @Summary Create Manga
+// @Description Create a new manga in the system.
+// @Tags Mangas
+// @Accept json
+// @Produce json
+// @Param mangaInsertDTO body dtos.MangaInsertDTO true "Manga Insert DTO"
+// @Success 201 {object} utils.ApiResponse "Manga Created"
+// @Failure 400 {object} utils.ApiResponse "Invalid Data"
+// @Failure 500 {object} utils.ApiResponse "Internal Server Error"
+// @Router /api/mangas [post]
 func (c MangaController) CreateManga() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		var mangaInsertDTO dtos.MangaInsertDTO
@@ -177,6 +267,19 @@ func (c MangaController) CreateManga() gin.HandlerFunc {
 	}
 }
 
+// UpdateManga updates an existing manga.
+// @Summary Update Manga
+// @Description Update an existing manga by its ID.
+// @Tags Mangas
+// @Accept json
+// @Produce json
+// @Param mangaId path string true "Manga ID"
+// @Param mangaInsertDTO body dtos.MangaInsertDTO true "Manga Insert DTO"
+// @Success 200 {object} utils.ApiResponse "Manga Updated"
+// @Failure 400 {object} utils.ApiResponse "Invalid Manga ID"
+// @Failure 404 {object} utils.ApiResponse "Manga not found"
+// @Failure 500 {object} utils.ApiResponse "Internal Server Error"
+// @Router /api/mangas/{mangaId} [put]
 func (c MangaController) UpdateManga() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		mangaId, err := utils.GetObjectIdFromUrlParam(ctx)
@@ -206,6 +309,18 @@ func (c MangaController) UpdateManga() gin.HandlerFunc {
 	}
 }
 
+// DeleteManga deletes a manga by ID.
+// @Summary Delete Manga
+// @Description Delete a manga by its ID.
+// @Tags Mangas
+// @Accept json
+// @Produce json
+// @Param mangaId path string true "Manga ID"
+// @Success 200 {object} utils.ApiResponse "Manga Deleted"
+// @Failure 400 {object} utils.ApiResponse "Invalid Manga ID"
+// @Failure 404 {object} utils.ApiResponse "Manga not found"
+// @Failure 500 {object} utils.ApiResponse "Internal Server Error"
+// @Router /api/mangas/{mangaId} [delete]
 func (c MangaController) DeleteManga() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		mangaId, err := utils.GetObjectIdFromUrlParam(ctx)
