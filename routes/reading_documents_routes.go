@@ -5,7 +5,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func BookRoutes(r *gin.Engine, bookController controllers.BookController) {
+func BookRoutes(r *gin.Engine, rateLimiter gin.HandlerFunc, bookController controllers.BookController) {
 	bookURLPath := r.Group(commonPath + "/reading-docs/books")
 
 	bookURLPath.GET("/:id", bookController.GetBookById())
@@ -20,27 +20,27 @@ func BookRoutes(r *gin.Engine, bookController controllers.BookController) {
 	bookURLPath.DELETE("/:id", bookController.DeleteBook())
 }
 
-func MangaRoutes(r *gin.Engine, mangaController controllers.MangaController) {
+func MangaRoutes(r *gin.Engine, rateLimiter gin.HandlerFunc, mangaController controllers.MangaController) {
 	mangaURLPath := r.Group(commonPath + "/reading-docs/mangas")
 
-	mangaURLPath.GET("/:id", mangaController.GetMangaById())
-	mangaURLPath.GET("by-name/:name", mangaController.GetMangaByMatchingName())
-	mangaURLPath.GET("by-author/:author", mangaController.GetMangaByAuthor())
-	mangaURLPath.GET("by-genre/:genre", mangaController.GetMangaByGenre())
-	mangaURLPath.GET("by-demography/:demography", mangaController.GetMangaByDemography())
-	mangaURLPath.GET("/all", mangaController.GetAllMangasSortedPaginated())
+	mangaURLPath.GET("/:id", rateLimiter, mangaController.GetMangaById())
+	mangaURLPath.GET("by-name/:name", rateLimiter, mangaController.GetMangaByMatchingName())
+	mangaURLPath.GET("by-author/:author", rateLimiter, mangaController.GetMangaByAuthor())
+	mangaURLPath.GET("by-genre/:genre", rateLimiter, mangaController.GetMangaByGenre())
+	mangaURLPath.GET("by-demography/:demography", rateLimiter, mangaController.GetMangaByDemography())
+	mangaURLPath.GET("/all", rateLimiter, mangaController.GetAllMangasSortedPaginated())
 
-	mangaURLPath.POST("/", mangaController.CreateManga())
-	mangaURLPath.PUT("/:id", mangaController.UpdateManga())
-	mangaURLPath.DELETE("/:id", mangaController.DeleteManga())
+	mangaURLPath.POST("/", rateLimiter, mangaController.CreateManga())
+	mangaURLPath.PUT("/:id", rateLimiter, mangaController.UpdateManga())
+	mangaURLPath.DELETE("/:id", rateLimiter, mangaController.DeleteManga())
 }
 
-func CustomDocumentUserRoutes(r *gin.Engine, documentController controllers.DocumentController) {
+func CustomDocumentUserRoutes(r *gin.Engine, rateLimiter gin.HandlerFunc, documentController controllers.DocumentController) {
 	documentURLPath := r.Group(commonPath + "/user/reading-docs/custom-documents")
 
-	documentURLPath.GET("/my-docs", documentController.GetMyCustomDocuments())
-	documentURLPath.GET("/:id", documentController.GetDocumentById())
-	documentURLPath.POST("/", documentController.CreateDocument())
-	documentURLPath.PUT("/:id", documentController.UpdateDocument())
-	documentURLPath.DELETE("/:id", documentController.DeleteDocument())
+	documentURLPath.GET("/my-docs", rateLimiter, documentController.GetMyCustomDocuments())
+	documentURLPath.GET("/:id", rateLimiter, documentController.GetDocumentById())
+	documentURLPath.POST("/", rateLimiter, documentController.CreateDocument())
+	documentURLPath.PUT("/:id", rateLimiter, documentController.UpdateDocument())
+	documentURLPath.DELETE("/:id", rateLimiter, documentController.DeleteDocument())
 }

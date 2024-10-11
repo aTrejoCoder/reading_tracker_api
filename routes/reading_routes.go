@@ -6,7 +6,7 @@ import (
 )
 
 // Readings
-func ReadingRoutes(r *gin.Engine, reading controllers.ReadingController) {
+func ReadingRoutes(r *gin.Engine, rateLimiter gin.HandlerFunc, reading controllers.ReadingController) {
 	readingPath := r.Group(commonPath + "/readings")
 
 	readingPath.GET("/:id", reading.GetReadingById())
@@ -15,59 +15,59 @@ func ReadingRoutes(r *gin.Engine, reading controllers.ReadingController) {
 	readingPath.DELETE("/:id", reading.DeleteReading())
 }
 
-func ReadingUserRoutes(r *gin.Engine, userReadingController controllers.ReadingUserController) {
+func ReadingUserRoutes(r *gin.Engine, rateLimiter gin.HandlerFunc, userReadingController controllers.ReadingUserController) {
 	// :id = readingId
 	usersPath := r.Group(commonPath + "/user-readings")
-	usersPath.GET("/", userReadingController.GetMyReadings())
-	usersPath.GET("/by-status", userReadingController.GetMyReadingsByStatus())
-	usersPath.GET("/by-type", userReadingController.GetMyReadingsByType())
-	usersPath.POST("/", userReadingController.StartReading())
-	usersPath.PUT("/:id", userReadingController.UpdateMyReading())
-	usersPath.DELETE("/:id", userReadingController.DeleteMyReading())
+	usersPath.GET("/", rateLimiter, userReadingController.GetMyReadings())
+	usersPath.GET("/by-status", rateLimiter, userReadingController.GetMyReadingsByStatus())
+	usersPath.GET("/by-type", rateLimiter, userReadingController.GetMyReadingsByType())
+	usersPath.POST("/", rateLimiter, userReadingController.StartReading())
+	usersPath.PUT("/:id", rateLimiter, userReadingController.UpdateMyReading())
+	usersPath.DELETE("/:id", rateLimiter, userReadingController.DeleteMyReading())
 }
 
 // Reading Records
-func RecordRoutes(r *gin.Engine, record controllers.RecordController) {
+func RecordRoutes(r *gin.Engine, rateLimiter gin.HandlerFunc, record controllers.RecordController) {
 	readingRecordPath := r.Group(commonPath + "/readings/records")
 
-	readingRecordPath.POST("/", record.CreateRecord())
-	readingRecordPath.PUT("/:id", record.UpdateRecord())
-	readingRecordPath.DELETE("/:id", record.DeleteRecord())
+	readingRecordPath.POST("/", rateLimiter, record.CreateRecord())
+	readingRecordPath.PUT("/:id", rateLimiter, record.UpdateRecord())
+	readingRecordPath.DELETE("/:id", rateLimiter, record.DeleteRecord())
 }
 
-func RecordUserRoutes(r *gin.Engine, userReadingController controllers.RecordUserController) {
+func RecordUserRoutes(r *gin.Engine, rateLimiter gin.HandlerFunc, userReadingController controllers.RecordUserController) {
 	// :id = readingId
 	usersPath := r.Group(commonPath + "/user-records")
-	usersPath.GET("/:id", userReadingController.GetRecordsFromMyReading())
-	usersPath.POST("/", userReadingController.AddRecord())
-	usersPath.PUT("/:id", userReadingController.UpdateRecord())
-	usersPath.DELETE("/:id", userReadingController.RemoveMyRecord())
+	usersPath.GET("/:id", rateLimiter, userReadingController.GetRecordsFromMyReading())
+	usersPath.POST("/", rateLimiter, userReadingController.AddRecord())
+	usersPath.PUT("/:id", rateLimiter, userReadingController.UpdateRecord())
+	usersPath.DELETE("/:id", rateLimiter, userReadingController.RemoveMyRecord())
 }
 
 // Reading List
-func ReadingListRoutes(r *gin.Engine, list controllers.ReadingListController) {
+func ReadingListRoutes(r *gin.Engine, rateLimiter gin.HandlerFunc, list controllers.ReadingListController) {
 	listPath := r.Group(commonPath + "/readings/lists")
 
-	listPath.PUT("/add-readings/:id", list.AddReadingToList())
-	listPath.PUT("/remove-readings/:id", list.RemoveReadingToList())
+	listPath.PUT("/add-readings/:id", rateLimiter, list.AddReadingToList())
+	listPath.PUT("/remove-readings/:id", rateLimiter, list.RemoveReadingToList())
 
-	listPath.GET("/", list.GetReadingListByUserId())
-	listPath.POST("/", list.CreateReadingList())
-	listPath.PUT("/:id", list.UpdateReadingList())
-	listPath.DELETE("/:id", list.DeleteReadingList())
+	listPath.GET("/", rateLimiter, list.GetReadingListByUserId())
+	listPath.POST("/", rateLimiter, list.CreateReadingList())
+	listPath.PUT("/:id", rateLimiter, list.UpdateReadingList())
+	listPath.DELETE("/:id", rateLimiter, list.DeleteReadingList())
 
 }
 
-func ReadingListUserRoutes(r *gin.Engine, list controllers.ReadingListUserController) {
+func ReadingListUserRoutes(r *gin.Engine, rateLimiter gin.HandlerFunc, list controllers.ReadingListUserController) {
 	listPath := r.Group(commonPath + "/user-readings/lists")
 
-	listPath.PUT("/add-readings", list.AddReadingToList())
-	listPath.PUT("/remove-readings/", list.RemoveReadingToList())
+	listPath.PUT("/add-readings", rateLimiter, list.AddReadingToList())
+	listPath.PUT("/remove-readings/", rateLimiter, list.RemoveReadingToList())
 
-	listPath.GET("/:id", list.GetMyReadingListById())
-	listPath.GET("/all", list.GetMyReadingLists())
-	listPath.POST("/", list.CreateReadingList())
-	listPath.PUT("/:id", list.UpdateMyReadingList())
-	listPath.DELETE("/:id", list.DeleteMyReadingList())
+	listPath.GET("/:id", rateLimiter, list.GetMyReadingListById())
+	listPath.GET("/all", rateLimiter, list.GetMyReadingLists())
+	listPath.POST("/", rateLimiter, list.CreateReadingList())
+	listPath.PUT("/:id", rateLimiter, list.UpdateMyReadingList())
+	listPath.DELETE("/:id", rateLimiter, list.DeleteMyReadingList())
 
 }

@@ -5,8 +5,8 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func AuthRoutes(r *gin.Engine, authController controllers.AuthController) {
+func AuthRoutes(r *gin.Engine, rateLimiter gin.HandlerFunc, authController controllers.AuthController) {
 	authRoutes := r.Group(commonPath)
-	authRoutes.POST("/signup", authController.Signup())
-	authRoutes.POST("/login", authController.Login())
+	authRoutes.POST("/signup", rateLimiter, authController.Signup())
+	authRoutes.POST("/login", rateLimiter, authController.Login())
 }

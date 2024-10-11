@@ -84,18 +84,18 @@ func main() {
 	recordUserController := controllers.NewRecordUserController(readingRecordService)
 
 	// Routes
-	routes.UserRoutes(r, *userControler)
-	routes.AuthRoutes(r, *authController)
-	routes.BookRoutes(r, *bookController)
-	routes.MangaRoutes(r, *mangaController)
+	routes.UserRoutes(r, ratelimiterHandler, *userControler)
+	routes.AuthRoutes(r, ratelimiterHandler, *authController)
+	routes.BookRoutes(r, ratelimiterHandler, *bookController)
+	routes.MangaRoutes(r, ratelimiterHandler, *mangaController)
 
-	routes.ReadingRoutes(r, *readingController)
-	routes.RecordRoutes(r, *readingRecordController)
-	routes.ReadingUserRoutes(r, *readingUserController)
-	routes.RecordUserRoutes(r, *recordUserController)
-	routes.ReadingListRoutes(r, *readingListController)
-	routes.ReadingListUserRoutes(r, *readingListUserController)
-	routes.CustomDocumentUserRoutes(r, *documentController)
+	routes.ReadingRoutes(r, ratelimiterHandler, *readingController)
+	routes.RecordRoutes(r, ratelimiterHandler, *readingRecordController)
+	routes.ReadingUserRoutes(r, ratelimiterHandler, *readingUserController)
+	routes.RecordUserRoutes(r, ratelimiterHandler, *recordUserController)
+	routes.ReadingListRoutes(r, ratelimiterHandler, *readingListController)
+	routes.ReadingListUserRoutes(r, ratelimiterHandler, *readingListUserController)
+	routes.CustomDocumentUserRoutes(r, ratelimiterHandler, *documentController)
 
 	r.Run()
 }

@@ -7,11 +7,11 @@ import (
 
 const commonPath = "/v1/api"
 
-func UserRoutes(r *gin.Engine, userController controllers.UserController) {
+func UserRoutes(r *gin.Engine, rateLimiter gin.HandlerFunc, userController controllers.UserController) {
 	// :id = readingId
 	usersPath := r.Group(commonPath + "/users")
-	usersPath.GET("/:id", userController.GetUserById())
-	usersPath.POST("/", userController.CreateUser())
-	usersPath.PUT("/:id", userController.UpdateUser())
-	usersPath.DELETE("/:id", userController.DeleteUser())
+	usersPath.GET("/:id", rateLimiter, userController.GetUserById())
+	usersPath.POST("/", rateLimiter, userController.CreateUser())
+	usersPath.PUT("/:id", rateLimiter, userController.UpdateUser())
+	usersPath.DELETE("/:id", rateLimiter, userController.DeleteUser())
 }
