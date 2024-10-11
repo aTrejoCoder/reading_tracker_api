@@ -4,6 +4,7 @@ import (
 	"github.com/aTrejoCoder/reading_tracker_api/controllers"
 	"github.com/aTrejoCoder/reading_tracker_api/database"
 	_ "github.com/aTrejoCoder/reading_tracker_api/docs"
+	"github.com/aTrejoCoder/reading_tracker_api/middleware"
 	"github.com/aTrejoCoder/reading_tracker_api/models"
 	"github.com/aTrejoCoder/reading_tracker_api/repository"
 	"github.com/aTrejoCoder/reading_tracker_api/routes"
@@ -25,9 +26,11 @@ import (
 // @BasePath /
 
 func main() {
+	ratelimiterHandler := middleware.RateLimiter()
+
 	// Server
 	r := gin.Default()
-	r.GET("/home", func(ctx *gin.Context) {
+	r.GET("/home", ratelimiterHandler, func(ctx *gin.Context) {
 		ctx.JSON(200, gin.H{"home": "reading_tracker_api"})
 	})
 
