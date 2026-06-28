@@ -5,7 +5,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/aTrejoCoder/reading_tracker_api/models"
+	"github.com/aTrejoCoder/reading_tracker_api/internal/models"
 	"github.com/stretchr/testify/assert"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"

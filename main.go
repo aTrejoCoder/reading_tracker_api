@@ -1,14 +1,14 @@
 package main
 
 import (
-	"github.com/aTrejoCoder/reading_tracker_api/controllers"
 	"github.com/aTrejoCoder/reading_tracker_api/database"
 	_ "github.com/aTrejoCoder/reading_tracker_api/docs"
+	"github.com/aTrejoCoder/reading_tracker_api/internal/controllers"
+	"github.com/aTrejoCoder/reading_tracker_api/internal/models"
+	"github.com/aTrejoCoder/reading_tracker_api/internal/repository"
+	"github.com/aTrejoCoder/reading_tracker_api/internal/routes"
+	"github.com/aTrejoCoder/reading_tracker_api/internal/services"
 	"github.com/aTrejoCoder/reading_tracker_api/middleware"
-	"github.com/aTrejoCoder/reading_tracker_api/models"
-	"github.com/aTrejoCoder/reading_tracker_api/repository"
-	"github.com/aTrejoCoder/reading_tracker_api/routes"
-	"github.com/aTrejoCoder/reading_tracker_api/services"
 	"github.com/gin-gonic/gin"
 	swaggerFiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
@@ -17,28 +17,20 @@ import (
 // @title Reading Tracker API
 // @version 1.0
 // @description API for managing books, manga, readings, and custom documents.
-
 // @contact.name API Support
 // @contact.url http://www.swagger.io/support
 // @contact.email support@swagger.io
-
 // @host localhost:8080
 // @BasePath /
-
 func main() {
 	ratelimiterHandler := middleware.RateLimiter()
 
 	// Server
 	r := gin.Default()
-	r.GET("/home", ratelimiterHandler, func(ctx *gin.Context) {
-		ctx.JSON(200, gin.H{"home": "reading_tracker_api"})
-	})
-
-	// Swagger route
-	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
 	//Database
 	database.DbConn()
+
 	userCollection := database.Client.Database("reading_tracker").Collection("users")
 	bookCollection := database.Client.Database("reading_tracker").Collection("books")
 	mangaCollection := database.Client.Database("reading_tracker").Collection("mangas")
@@ -82,6 +74,17 @@ func main() {
 
 	documentController := controllers.NewDocumentController(documentService)
 	recordUserController := controllers.NewRecordUserController(readingRecordService)
+
+	r.GET("/home", ratelimiterHandler, func(ctx *gin.Context) {
+		ctx.JSON(200, gin.H{"home": "reading_tracker_api"})
+	})
+
+	r.GET("/health", ratelimiterHandler, func(ctx *gin.Context) {
+		ctx.JSON(200, gin.H{"health": "ok"})
+	})
+
+	// Swagger route
+	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
 	// Routes
 	routes.UserRoutes(r, ratelimiterHandler, *userControler)
